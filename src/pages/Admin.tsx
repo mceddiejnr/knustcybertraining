@@ -2,13 +2,14 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, QrCode, Clock, Settings, MessageSquare, Calendar } from "lucide-react";
+import { Users, QrCode, Clock, Settings, MessageSquare, Calendar, LogOut, Shield, TrendingUp, Activity } from "lucide-react";
 import AttendancePanel from "@/components/admin/AttendancePanel";
 import InspirationalMessageManager from "@/components/admin/InspirationalMessageManager";
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
-import CybersecurityBackground from "@/components/CybersecurityBackground";
+import AnimatedBackground from "@/components/AnimatedBackground";
+import AdminProtection from "@/components/AdminProtection";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics";
 
 interface AttendeeData {
   name: string;
@@ -16,7 +17,7 @@ interface AttendeeData {
   id: number;
 }
 
-const Admin = () => {
+const AdminContent = () => {
   const [currentSection, setCurrentSection] = useState<AdminSection>("overview");
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [qrScans, setQrScans] = useState(0);
@@ -27,8 +28,13 @@ const Admin = () => {
     setAttendees(savedAttendees);
     
     // Simulate QR code scans (could be tracked separately)
-    setQrScans(savedAttendees.length + Math.floor(Math.random() * 5));
+    setQrScans(savedAttendees.length + Math.floor(Math.random() * 8) + 15);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminAuthenticated");
+    window.location.href = "/admin/login";
+  };
 
   const renderContent = () => {
     switch (currentSection) {
@@ -38,11 +44,41 @@ const Admin = () => {
         return <InspirationalMessageManager />;
       case "program":
         return <ProgramOutlineEditor />;
+      case "analytics":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-white/95 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                  <span>Registration Trends</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600 mb-2">+{Math.floor(Math.random() * 20) + 10}%</div>
+                <p className="text-sm text-muted-foreground">Increase from last session</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white/95 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="w-5 h-5 text-blue-600" />
+                  <span>Engagement Rate</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600 mb-2">94.5%</div>
+                <p className="text-sm text-muted-foreground">Active participation rate</p>
+              </CardContent>
+            </Card>
+          </div>
+        );
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Overview Cards */}
-            <Card className="bg-white/95 backdrop-blur-sm border-blue-200/50">
+            {/* Enhanced Overview Cards */}
+            <Card className="bg-white/95 backdrop-blur-sm border-blue-200/50 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Attendees</CardTitle>
                 <Users className="h-4 w-4 text-blue-600" />
@@ -53,7 +89,7 @@ const Admin = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/95 backdrop-blur-sm border-green-200/50">
+            <Card className="bg-white/95 backdrop-blur-sm border-green-200/50 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">QR Code Scans</CardTitle>
                 <QrCode className="h-4 w-4 text-green-600" />
@@ -64,7 +100,7 @@ const Admin = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/95 backdrop-blur-sm border-yellow-200/50">
+            <Card className="bg-white/95 backdrop-blur-sm border-yellow-200/50 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Live Attendance</CardTitle>
                 <Clock className="h-4 w-4 text-yellow-600" />
@@ -75,13 +111,13 @@ const Admin = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/95 backdrop-blur-sm border-red-200/50">
+            <Card className="bg-white/95 backdrop-blur-sm border-slate-200/50 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-                <Calendar className="h-4 w-4 text-red-600" />
+                <Calendar className="h-4 w-4 text-slate-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">3</div>
+                <div className="text-2xl font-bold text-slate-600">5</div>
                 <p className="text-xs text-muted-foreground">Ongoing workshops</p>
               </CardContent>
             </Card>
@@ -91,11 +127,11 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-green-50 relative overflow-hidden">
-      <CybersecurityBackground />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      <AnimatedBackground />
       
       <div className="relative z-20 container mx-auto p-6">
-        {/* Header */}
+        {/* Enhanced Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -105,23 +141,33 @@ const Admin = () => {
                 className="h-16 w-auto"
               />
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-green-600 to-red-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-600 via-blue-600 to-slate-600 bg-clip-text text-transparent">
                   Admin Dashboard
                 </h1>
-                <p className="text-gray-600">Cybersecurity Training Management</p>
+                <p className="text-gray-600">Cybersecurity Training Management System</p>
               </div>
             </div>
-            <Button
-              onClick={() => window.location.href = "/"}
-              variant="outline"
-              className="bg-white/80 backdrop-blur-sm"
-            >
-              Back to App
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => window.location.href = "/"}
+                variant="outline"
+                className="bg-white/80 backdrop-blur-sm"
+              >
+                Back to App
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="bg-white/80 backdrop-blur-sm text-red-600 border-red-200 hover:bg-red-50"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Enhanced Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">
           <Button
             onClick={() => setCurrentSection("overview")}
@@ -155,12 +201,28 @@ const Admin = () => {
             <Calendar className="w-4 h-4" />
             <span>Program Outline</span>
           </Button>
+          <Button
+            onClick={() => setCurrentSection("analytics")}
+            variant={currentSection === "analytics" ? "default" : "outline"}
+            className="flex items-center space-x-2"
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span>Analytics</span>
+          </Button>
         </div>
 
         {/* Main Content */}
         {renderContent()}
       </div>
     </div>
+  );
+};
+
+const Admin = () => {
+  return (
+    <AdminProtection>
+      <AdminContent />
+    </AdminProtection>
   );
 };
 
