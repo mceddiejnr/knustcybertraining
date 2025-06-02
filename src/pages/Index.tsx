@@ -33,18 +33,18 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-950 to-amber-950 relative overflow-hidden">
-      {/* KNUST-themed Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-32 border border-amber-400 rotate-45"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 border border-red-400 rotate-12"></div>
-        <div className="absolute bottom-20 left-1/4 w-28 h-28 border border-green-400 -rotate-12"></div>
-        <div className="absolute bottom-40 right-10 w-20 h-20 border border-amber-400 rotate-45"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-green-50 relative overflow-hidden">
+      {/* Elegant floating elements inspired by logo colors */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-10 left-10 w-24 h-24 bg-gradient-to-br from-red-400 to-red-500 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-yellow-400 to-amber-400 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-20 left-1/4 w-28 h-28 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full blur-xl animate-pulse delay-2000"></div>
+        <div className="absolute bottom-40 right-10 w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-xl animate-pulse delay-500"></div>
       </div>
       
-      {/* KNUST-inspired circuit pattern overlay */}
-      <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dc2626' fill-opacity='0.4'%3E%3Ccircle cx='9' cy='9' r='1'/%3E%3Ccircle cx='49' cy='49' r='1'/%3E%3Ccircle cx='9' cy='49' r='1'/%3E%3Ccircle cx='49' cy='9' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      {/* Cute decorative patterns */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23dc2626' fill-opacity='0.3'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")`
       }}></div>
       
       {currentState === "welcome" && (

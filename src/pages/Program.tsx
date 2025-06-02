@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Clock, MapPin, Lock, CircuitBoard } from "lucide-react";
+import { ArrowLeft, Clock, MapPin, Calendar, Users, Shield } from "lucide-react";
 
 const Program = () => {
   const scheduleItems = [
@@ -42,13 +42,13 @@ const Program = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-950 to-amber-950 py-8 px-4 relative overflow-hidden">
-      {/* KNUST-themed Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-32 h-32 border border-amber-400 rotate-45"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 border border-red-400 rotate-12"></div>
-        <div className="absolute bottom-20 left-1/4 w-28 h-28 border border-green-400 -rotate-12"></div>
-        <div className="absolute bottom-40 right-10 w-20 h-20 border border-amber-400 rotate-45"></div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-green-50 py-8 px-4 relative overflow-hidden">
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 opacity-15">
+        <div className="absolute top-10 left-10 w-24 h-24 bg-gradient-to-br from-red-400 to-red-500 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-yellow-400 to-amber-400 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-20 left-1/4 w-28 h-28 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full blur-xl animate-pulse delay-2000"></div>
+        <div className="absolute bottom-40 right-10 w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-xl animate-pulse delay-500"></div>
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -56,92 +56,92 @@ const Program = () => {
           {/* KNUST Logo */}
           <div className="mb-4">
             <img 
-              src="/lovable-uploads/6ce08c53-d1c5-447f-a093-4655c351e1a8.png" 
+              src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
               alt="KNUST Logo" 
-              className="h-16 w-auto opacity-90"
+              className="h-20 w-auto drop-shadow-lg"
             />
           </div>
           <Button 
             onClick={() => window.history.back()}
             variant="outline"
-            className="mb-4 bg-slate-900/60 border-amber-500/40 text-amber-400 hover:bg-slate-800/60 hover:border-amber-400 backdrop-blur-sm"
+            className="mb-4 bg-white/80 border-yellow-300 text-gray-700 hover:bg-yellow-50 hover:border-yellow-400 backdrop-blur-sm rounded-xl shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
         </div>
 
-        <div className="bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-amber-500/30 overflow-hidden">
-          <div className="bg-gradient-to-r from-red-700/90 via-red-600/90 to-amber-600/90 text-white p-8 relative overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-yellow-200/50 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white p-8 relative overflow-hidden">
             {/* Header background pattern */}
             <div className="absolute inset-0 opacity-20">
-              <CircuitBoard className="absolute top-4 right-4 w-12 h-12 text-amber-300" />
-              <Lock className="absolute bottom-4 left-4 w-10 h-10 text-green-300" />
+              <Shield className="absolute top-4 right-4 w-12 h-12 text-white animate-pulse" />
+              <div className="absolute bottom-4 left-4 w-10 h-10 bg-white/20 rounded-full animate-pulse"></div>
             </div>
             
             <div className="relative z-10">
               <div className="flex items-center space-x-3 mb-4">
-                <Lock className="w-8 h-8 text-amber-300" />
+                <Shield className="w-8 h-8 text-white" />
                 <h1 className="text-3xl font-bold">
                   KNUST Cybersecurity Training Session Outline
                 </h1>
               </div>
-              <p className="text-amber-100 text-lg mb-6">
-                "Securing Digital Workspaces: Awareness, Prevention, and Best Practices"
+              <p className="text-white/90 text-lg mb-6 font-medium">
+                "Securing Digital Workspaces: Awareness, Prevention, and Best Practices" ✨
               </p>
               
               <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-2">
-                  <CircuitBoard className="w-4 h-4" />
-                  <span>Tuesday, 3rd June 2025</span>
+                <div className="flex items-center space-x-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+                  <Calendar className="w-4 h-4" />
+                  <span className="font-medium">Tuesday, 3rd June 2025</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-2">
+                <div className="flex items-center space-x-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                   <Clock className="w-4 h-4" />
-                  <span>10:00 AM – 12:00 Noon</span>
+                  <span className="font-medium">10:00 AM – 12:00 Noon</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-2">
+                <div className="flex items-center space-x-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                   <MapPin className="w-4 h-4" />
-                  <span>Library Mall Conference Room, KNUST</span>
+                  <span className="font-medium">Library Mall Conference Room, KNUST</span>
                 </div>
               </div>
               
-              <div className="mt-4 flex items-center space-x-2 text-sm bg-white/10 rounded-lg p-2 inline-flex">
-                <Lock className="w-4 h-4" />
-                <span>Target Audience: KNUST Library Staff</span>
+              <div className="mt-4 flex items-center space-x-2 text-sm bg-white/10 rounded-xl p-3 inline-flex backdrop-blur-sm">
+                <Users className="w-4 h-4" />
+                <span className="font-medium">Target Audience: KNUST Library Staff</span>
               </div>
             </div>
           </div>
 
           <div className="p-8">
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center space-x-2">
-              <CircuitBoard className="w-6 h-6 text-amber-400" />
-              <span>Training Schedule</span>
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
+              <Shield className="w-6 h-6 text-yellow-500" />
+              <span>Training Schedule 📅</span>
             </h2>
             
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b-2 border-amber-500/40">
-                    <th className="text-left py-3 px-4 font-semibold text-amber-400">Time</th>
-                    <th className="text-left py-3 px-4 font-semibold text-amber-400">Activity</th>
-                    <th className="text-left py-3 px-4 font-semibold text-amber-400">Facilitator</th>
+                  <tr className="border-b-2 border-yellow-300">
+                    <th className="text-left py-4 px-4 font-bold text-gray-700 bg-yellow-50 rounded-tl-xl">Time</th>
+                    <th className="text-left py-4 px-4 font-bold text-gray-700 bg-yellow-50">Activity</th>
+                    <th className="text-left py-4 px-4 font-bold text-gray-700 bg-yellow-50 rounded-tr-xl">Facilitator</th>
                   </tr>
                 </thead>
                 <tbody>
                   {scheduleItems.map((item, index) => (
                     <tr 
                       key={index} 
-                      className={`border-b border-slate-600/30 hover:bg-amber-500/10 transition-colors ${
-                        index % 2 === 0 ? 'bg-slate-800/40' : 'bg-slate-900/40'
+                      className={`border-b border-gray-200 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-green-50 transition-all duration-200 ${
+                        index % 2 === 0 ? 'bg-blue-50/30' : 'bg-white'
                       }`}
                     >
-                      <td className="py-4 px-4 font-mono text-sm text-amber-300 font-medium">
+                      <td className="py-4 px-4 font-mono text-sm text-red-600 font-bold bg-red-50/50 rounded-l-lg">
                         {item.time}
                       </td>
-                      <td className="py-4 px-4 font-medium text-white">
+                      <td className="py-4 px-4 font-semibold text-gray-800">
                         {item.activity}
                       </td>
-                      <td className="py-4 px-4 text-slate-300">
+                      <td className="py-4 px-4 text-gray-600 font-medium">
                         {item.facilitator}
                       </td>
                     </tr>
@@ -150,16 +150,28 @@ const Program = () => {
               </table>
             </div>
 
-            <div className="mt-8 bg-slate-800/70 rounded-xl p-6 border border-amber-500/30">
-              <h3 className="font-semibold text-white mb-2 flex items-center space-x-2">
-                <Lock className="w-5 h-5 text-amber-400" />
-                <span>Important Notes:</span>
+            <div className="mt-8 bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-6 border border-yellow-200/50 shadow-inner">
+              <h3 className="font-bold text-gray-800 mb-3 flex items-center space-x-2">
+                <Shield className="w-5 h-5 text-green-500" />
+                <span>Important Notes 📋</span>
               </h3>
-              <ul className="text-slate-300 space-y-1 text-sm">
-                <li>• Please arrive 10 minutes early for registration</li>
-                <li>• Bring your KNUST ID for verification</li>
-                <li>• Interactive sessions will include hands-on exercises</li>
-                <li>• Light refreshments will be served during breaks</li>
+              <ul className="text-gray-700 space-y-2 text-sm font-medium">
+                <li className="flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                  <span>Please arrive 10 minutes early for registration</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                  <span>Bring your KNUST ID for verification</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                  <span>Interactive sessions will include hands-on exercises</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                  <span>Light refreshments will be served during breaks</span>
+                </li>
               </ul>
             </div>
           </div>
