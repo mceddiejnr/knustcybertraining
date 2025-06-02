@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Lock, Eye, EyeOff } from "lucide-react";
+import { Shield, Lock, Eye, EyeOff, User } from "lucide-react";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,7 +19,7 @@ const AdminLogin = () => {
   // Demo credentials - in real app this would be handled by backend
   const ADMIN_CREDENTIALS = {
     username: "admin",
-    password: "knust2024"
+    password: "admin123"
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -48,63 +48,73 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-gray-50 to-green-100 relative overflow-hidden">
       <AnimatedBackground />
       
       <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
         {/* KNUST Logo */}
-        <div className="absolute top-8 left-8">
+        <div className="absolute top-6 left-6">
           <img 
             src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
             alt="KNUST Logo" 
-            className="h-16 w-auto drop-shadow-lg"
+            className="h-12 sm:h-16 w-auto drop-shadow-lg"
           />
         </div>
 
-        <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-200/50">
-          <CardHeader className="text-center space-y-4">
+        <Card className="w-full max-w-md bg-white/98 backdrop-blur-xl shadow-2xl border border-green-200/50 rounded-3xl overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
+          
+          <CardHeader className="text-center space-y-4 pt-8">
             <div className="flex justify-center">
-              <div className="p-4 bg-gradient-to-br from-slate-600 to-blue-600 rounded-full shadow-lg">
-                <Shield className="w-8 h-8 text-white" />
+              <div className="p-4 bg-gradient-to-br from-green-600 to-green-700 rounded-full shadow-lg relative">
+                <Lock className="w-8 h-8 text-white" />
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                  <Shield className="w-3 h-3 text-white" />
+                </div>
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-700 to-blue-600 bg-clip-text text-transparent">
-              Admin Login
+            <CardTitle className="text-2xl font-bold text-gray-800">
+              KNUST LCM
             </CardTitle>
-            <CardDescription className="text-slate-600">
-              Access the cybersecurity training dashboard
+            <CardDescription className="text-gray-600 font-medium">
+              Enter your credentials to access the admin dashboard
             </CardDescription>
           </CardHeader>
           
-          <CardContent>
+          <CardContent className="px-8 pb-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-slate-700 font-medium">
+                <Label htmlFor="username" className="text-gray-700 font-medium text-sm">
                   Username
                 </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={credentials.username}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  className="bg-white/80 border-slate-200 focus:border-blue-400"
-                  placeholder="Enter admin username"
-                  required
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="username"
+                    type="text"
+                    value={credentials.username}
+                    onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                    className="pl-10 bg-yellow-50 border-gray-200 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3"
+                    placeholder="admin"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-gray-500">Username: admin</p>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-700 font-medium">
+                <Label htmlFor="password" className="text-gray-700 font-medium text-sm">
                   Password
                 </Label>
                 <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={credentials.password}
                     onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    className="bg-white/80 border-slate-200 focus:border-blue-400 pr-10"
-                    placeholder="Enter admin password"
+                    className="pl-10 pr-10 bg-yellow-50 border-gray-200 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3"
+                    placeholder="••••••••"
                     required
                   />
                   <Button
@@ -115,41 +125,36 @@ const AdminLogin = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-slate-500" />
+                      <EyeOff className="h-4 w-4 text-gray-500" />
                     ) : (
-                      <Eye className="h-4 w-4 text-slate-500" />
+                      <Eye className="h-4 w-4 text-gray-500" />
                     )}
                   </Button>
                 </div>
+                <p className="text-xs text-gray-500">Password: admin123</p>
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-slate-600 to-blue-600 hover:from-slate-700 hover:to-blue-700 text-white py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Authenticating...</span>
+                    <span>Signing In...</span>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-2">
-                    <Lock className="w-4 h-4" />
-                    <span>Login</span>
-                  </div>
+                  "Sign In"
                 )}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
-              <p className="text-xs text-slate-500">
-                Demo credentials: admin / knust2024
-              </p>
               <Button
                 variant="ghost"
                 onClick={() => navigate("/")}
-                className="mt-2 text-slate-600 hover:text-slate-800"
+                className="text-gray-600 hover:text-gray-800 text-sm"
               >
                 Back to Main App
               </Button>
