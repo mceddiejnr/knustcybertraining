@@ -61,16 +61,17 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
           onClick={() => window.location.href = "/admin/login"} 
           variant="outline" 
           size="sm" 
-          className="bg-white/90 backdrop-blur-sm border-gray-300 hover:bg-white text-gray-700 text-xs sm:text-sm"
+          className="bg-gray-800/90 backdrop-blur-sm border-green-500/30 hover:bg-gray-700 text-green-400 text-xs sm:text-sm hover:border-green-400"
         >
           <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
           Admin
         </Button>
       </div>
 
-      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full bg-white/98 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/60 p-4 sm:p-6 md:p-8 text-center relative overflow-hidden">
-        {/* Professional gradient border effect */}
-        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-100/40 via-gray-50/40 to-green-100/40 blur-xl"></div>
+      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full bg-gray-800/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-green-500/30 p-4 sm:p-6 md:p-8 text-center relative overflow-hidden">
+        {/* Cyber border effect */}
+        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-500/20 via-transparent to-green-500/20 blur-sm"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
         
         <div className="relative z-10">
           <div className="mb-4 sm:mb-6">
@@ -82,16 +83,16 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
             </div>
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 bg-gradient-to-r from-green-700 via-gray-700 to-green-600 bg-clip-text text-transparent">
-              Cybersecurity Training
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 tracking-wide">
+              CYBERSECURITY TRAINING
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 font-medium">
+            <p className="text-sm sm:text-base text-green-400 font-medium font-mono">
               Scan to begin your training journey
             </p>
           </div>
           
           <div className="mb-4 sm:mb-6">
-            <div className="inline-flex items-center justify-center w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 bg-white rounded-xl sm:rounded-2xl border-2 border-gray-300/60 mb-3 sm:mb-4 shadow-lg overflow-hidden">
+            <div className="inline-flex items-center justify-center w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 bg-gray-700/80 rounded-xl sm:rounded-2xl border-2 border-green-500/30 mb-3 sm:mb-4 shadow-lg overflow-hidden">
               {qrCodeUrl ? (
                 <img 
                   src={qrCodeUrl} 
@@ -100,28 +101,28 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
                 />
               ) : (
                 <div className="flex items-center justify-center w-full h-full">
-                  <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-4 border-gray-300 border-t-green-600 rounded-full"></div>
+                  <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-4 border-gray-500 border-t-green-600 rounded-full"></div>
                 </div>
               )}
             </div>
             <div className="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
-              <Smartphone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
-              <p className="text-xs sm:text-sm text-gray-500 font-medium">
+              <Smartphone className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
+              <p className="text-xs sm:text-sm text-gray-300 font-medium font-mono">
                 Scan with your phone camera
               </p>
             </div>
           </div>
 
           {/* Direct Link Section */}
-          <div className="border-t border-gray-200 pt-3 sm:pt-4 mb-4 sm:mb-6">
-            <p className="text-xs text-gray-500 mb-2 sm:mb-3">
+          <div className="border-t border-gray-600 pt-3 sm:pt-4 mb-4 sm:mb-6">
+            <p className="text-xs text-gray-400 mb-2 sm:mb-3 font-mono">
               Or access directly in your browser:
             </p>
-            <div className="bg-gray-50 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-gray-200">
+            <div className="bg-gray-700/50 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-gray-600">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 flex-1 min-w-0">
-                  <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                  <p className="text-xs sm:text-sm text-gray-700 font-mono truncate">
+                  <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 flex-shrink-0" />
+                  <p className="text-xs sm:text-sm text-gray-300 font-mono truncate">
                     {currentUrl}
                   </p>
                 </div>
@@ -129,7 +130,7 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
                   onClick={copyLink}
                   variant="ghost"
                   size="sm"
-                  className="ml-2 p-1 h-auto text-green-600 hover:text-green-700 hover:bg-green-50 flex-shrink-0"
+                  className="ml-2 p-1 h-auto text-green-400 hover:text-green-300 hover:bg-gray-600/50 flex-shrink-0"
                 >
                   <span className="text-xs">Copy</span>
                 </Button>
@@ -138,7 +139,7 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
             <Button 
               onClick={handleDirectLink} 
               variant="outline" 
-              className="w-full border-green-300 text-green-700 hover:bg-green-50 text-sm py-2"
+              className="w-full border-green-500/30 text-green-400 hover:bg-gray-700/50 hover:border-green-400 text-sm py-2"
             >
               <Link2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
               Use Direct Link Instead
@@ -147,12 +148,12 @@ const QRCodeGenerator = ({ onScan }: QRCodeGeneratorProps) => {
           
           <Button 
             onClick={onScan} 
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 font-semibold text-sm sm:text-base shadow-lg"
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 font-semibold text-sm sm:text-base shadow-lg font-mono"
           >
-            Start Training Session
+            START TRAINING SESSION
           </Button>
           
-          <p className="text-xs text-gray-400 mt-2 sm:mt-3 italic">
+          <p className="text-xs text-gray-500 mt-2 sm:mt-3 italic font-mono">
             Professional cybersecurity training by KNUST
           </p>
         </div>

@@ -19,33 +19,34 @@ const SuccessMessage = ({ attendeeName, onViewProgram }: SuccessMessageProps) =>
         />
       </div>
 
-      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full bg-white/98 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/60 p-4 sm:p-6 md:p-8 text-center relative overflow-hidden">
-        {/* Professional gradient border effect */}
-        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-100/30 via-gray-50/30 to-green-100/30 blur-xl"></div>
+      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full bg-gray-800/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-green-500/30 p-4 sm:p-6 md:p-8 text-center relative overflow-hidden">
+        {/* Cyber border effect */}
+        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-500/20 via-transparent to-green-500/20 blur-sm"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
         
         <div className="relative z-10">
           <div className="mb-4 sm:mb-6">
             <div className="flex justify-center mb-3 sm:mb-4">
               <div className="p-3 sm:p-4 bg-gradient-to-br from-green-600 to-green-700 rounded-full shadow-lg relative animate-pulse">
                 <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
-                {/* Professional accent */}
+                {/* Cyber accent */}
                 <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                   <Shield className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                 </div>
               </div>
             </div>
             
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 bg-gradient-to-r from-green-700 via-gray-700 to-green-600 bg-clip-text text-transparent">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 tracking-wide">
               Welcome, {attendeeName}! 🎯
             </h2>
             
-            <div className="bg-gradient-to-br from-green-50 to-gray-50 rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 border border-green-200/50 shadow-inner">
-              <p className="text-green-700 font-semibold text-sm sm:text-base">
+            <div className="bg-gray-700/50 rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 border border-green-500/30 shadow-inner">
+              <p className="text-green-400 font-semibold text-sm sm:text-base font-mono">
                 Registration successful! Your attendance has been recorded for today's cybersecurity training session. ✅
               </p>
             </div>
             
-            <p className="text-gray-600 font-medium text-sm sm:text-base">
+            <p className="text-gray-300 font-medium text-sm sm:text-base">
               You're now registered for the KNUST cybersecurity training program. 
               Ready to enhance your digital security knowledge? 🛡️
             </p>
@@ -53,9 +54,9 @@ const SuccessMessage = ({ attendeeName, onViewProgram }: SuccessMessageProps) =>
 
           <Button 
             onClick={onViewProgram}
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 sm:py-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold text-sm sm:text-base shadow-lg"
+            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 sm:py-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold text-sm sm:text-base shadow-lg font-mono"
           >
-            <span>View Program</span>
+            <span>VIEW PROGRAM</span>
             <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
             <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
           </Button>

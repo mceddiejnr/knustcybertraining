@@ -3,7 +3,7 @@ import { useState } from "react";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import WelcomeMessage from "@/components/WelcomeMessage";
 import SuccessMessage from "@/components/SuccessMessage";
-import AnimatedBackground from "@/components/AnimatedBackground";
+import CyberBackground from "@/components/CyberBackground";
 
 export type AppState = "welcome" | "form" | "success";
 
@@ -34,9 +34,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-      {/* Enhanced Professional Background Animation */}
-      <AnimatedBackground />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
+      <CyberBackground />
       
       {/* Content with higher z-index */}
       <div className="relative z-20">
