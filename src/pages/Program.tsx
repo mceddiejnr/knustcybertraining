@@ -19,43 +19,73 @@ const Program = () => {
       id: 1,
       time: "10:00 – 10:10",
       topic: "Opening Remarks and Welcome",
-      speaker: "Dr. Samuel Kotei Nikoi (University Librarian)"
+      speaker: "University Librarian"
     },
     {
       id: 2,
-      time: "10:10 – 10:25",
+      time: "10:10 – 10:20",
       topic: "Introduction to Cybersecurity",
-      speaker: "Mr. Phanuel Kwadwo Seli Asense (Deputy Director)"
+      speaker: "Deputy Director, ISTAD"
     },
     {
       id: 3,
-      time: "10:25 – 10:45",
-      topic: "Common Cyber Threats & Prevention Tips",
-      speaker: "Cybersecurity Expert"
+      time: "10:20 – 10:30",
+      topic: "ISTAD's Role in Cybersecurity",
+      speaker: "Deputy Director, ISTAD"
     },
     {
       id: 4,
-      time: "10:45 – 11:10",
-      topic: "Safe Use of Email, Passwords & Cloud Tools",
-      speaker: "Microsoft 365 Trainer"
+      time: "10:30 – 10:40",
+      topic: "The need for Cybersecurity",
+      speaker: "Deputy Director, ISTAD"
     },
     {
       id: 5,
-      time: "11:10 – 11:30",
-      topic: "Cybersecurity Policies and Best Practices",
-      speaker: "UITS Representative"
+      time: "10:40 – 10:50",
+      topic: "What Motivates Cyber Criminals?",
+      speaker: "Deputy Director, ISTAD"
     },
     {
       id: 6,
-      time: "11:30 – 11:50",
-      topic: "Q&A and Interactive Session",
-      speaker: "All Facilitators"
+      time: "10:50 – 11:00",
+      topic: "Types of Cyber Crime",
+      speaker: "Deputy Director, ISTAD"
     },
     {
       id: 7,
+      time: "11:00 – 11:20",
+      topic: "Phishing & Social Engineering",
+      speaker: "Deputy Director, ISTAD"
+    },
+    {
+      id: 8,
+      time: "11:20 – 11:25",
+      topic: "Video Demonstration",
+      speaker: "All Facilitators"
+    },
+    {
+      id: 9,
+      time: "11:25 – 11:30",
+      topic: "Password Strength Demonstration",
+      speaker: "All Facilitators"
+    },
+    {
+      id: 10,
+      time: "11:35 – 11:40",
+      topic: "Attack Map Demonstration",
+      speaker: "All Facilitators"
+    },
+    {
+      id: 11,
+      time: "11:40 – 11:50",
+      topic: "Conclusion",
+      speaker: "Deputy Director, ISTAD"
+    },
+    {
+      id: 12,
       time: "11:50 – 12:00",
-      topic: "Closing Remarks & Next Steps",
-      speaker: "Training Coordinator"
+      topic: "Q&A, Interactive Session",
+      speaker: "All Facilitators"
     }
   ];
 

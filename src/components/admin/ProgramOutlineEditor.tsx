@@ -32,31 +32,87 @@ const ProgramOutlineEditor = () => {
   const defaultSessions: Session[] = [
     {
       id: 1,
-      time: "9:00 AM",
-      topic: "Introduction to Cybersecurity",
-      speaker: "Dr. Sarah Johnson",
-      description: "Overview of cybersecurity fundamentals and current threat landscape"
+      time: "10:00 – 10:10",
+      topic: "Opening Remarks and Welcome",
+      speaker: "University Librarian",
+      description: "Welcome and program introduction"
     },
     {
       id: 2,
-      time: "10:30 AM",
-      topic: "Password Security Best Practices",
-      speaker: "Michael Chen",
-      description: "Creating strong passwords and using password managers effectively"
+      time: "10:10 – 10:20",
+      topic: "Introduction to Cybersecurity",
+      speaker: "Deputy Director, ISTAD",
+      description: "Overview of cybersecurity fundamentals"
     },
     {
       id: 3,
-      time: "2:00 PM",
-      topic: "Phishing and Social Engineering",
-      speaker: "Dr. Sarah Johnson",
-      description: "Identifying and avoiding common cyber attacks"
+      time: "10:20 – 10:30",
+      topic: "ISTAD's Role in Cybersecurity",
+      speaker: "Deputy Director, ISTAD",
+      description: "Understanding ISTAD's cybersecurity initiatives"
     },
     {
       id: 4,
-      time: "3:30 PM",
-      topic: "Safe Internet Browsing",
-      speaker: "Alex Rodriguez",
-      description: "Best practices for secure online activities and downloads"
+      time: "10:30 – 10:40",
+      topic: "The need for Cybersecurity",
+      speaker: "Deputy Director, ISTAD",
+      description: "Why cybersecurity is crucial in today's digital world"
+    },
+    {
+      id: 5,
+      time: "10:40 – 10:50",
+      topic: "What Motivates Cyber Criminals?",
+      speaker: "Deputy Director, ISTAD",
+      description: "Understanding the psychology behind cyber attacks"
+    },
+    {
+      id: 6,
+      time: "10:50 – 11:00",
+      topic: "Types of Cyber Crime",
+      speaker: "Deputy Director, ISTAD",
+      description: "Overview of different cyber crime categories"
+    },
+    {
+      id: 7,
+      time: "11:00 – 11:20",
+      topic: "Phishing & Social Engineering",
+      speaker: "Deputy Director, ISTAD",
+      description: "Identifying and avoiding social engineering attacks"
+    },
+    {
+      id: 8,
+      time: "11:20 – 11:25",
+      topic: "Video Demonstration",
+      speaker: "All Facilitators",
+      description: "Visual demonstration of cybersecurity concepts"
+    },
+    {
+      id: 9,
+      time: "11:25 – 11:30",
+      topic: "Password Strength Demonstration",
+      speaker: "All Facilitators",
+      description: "Hands-on password security best practices"
+    },
+    {
+      id: 10,
+      time: "11:35 – 11:40",
+      topic: "Attack Map Demonstration",
+      speaker: "All Facilitators",
+      description: "Live demonstration of global cyber attacks"
+    },
+    {
+      id: 11,
+      time: "11:40 – 11:50",
+      topic: "Conclusion",
+      speaker: "Deputy Director, ISTAD",
+      description: "Summary and key takeaways"
+    },
+    {
+      id: 12,
+      time: "11:50 – 12:00",
+      topic: "Q&A, Interactive Session",
+      speaker: "All Facilitators",
+      description: "Questions, answers, and interactive discussion"
     }
   ];
 
