@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,34 +7,28 @@ import InspirationalMessageManager from "@/components/admin/InspirationalMessage
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
 import CyberBackground from "@/components/CyberBackground";
 import AdminProtection from "@/components/AdminProtection";
-
 type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics";
-
 interface AttendeeData {
   name: string;
   timestamp: string;
   id: number;
 }
-
 const AdminContent = () => {
   const [currentSection, setCurrentSection] = useState<AdminSection>("overview");
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [qrScans, setQrScans] = useState(0);
-
   useEffect(() => {
     // Load attendees from localStorage
     const savedAttendees = JSON.parse(localStorage.getItem("attendees") || "[]");
     setAttendees(savedAttendees);
-    
+
     // Simulate QR code scans (could be tracked separately)
     setQrScans(savedAttendees.length + Math.floor(Math.random() * 8) + 15);
   }, []);
-
   const handleLogout = () => {
     localStorage.removeItem("adminAuthenticated");
     window.location.href = "/admin/login";
   };
-
   const renderContent = () => {
     switch (currentSection) {
       case "attendance":
@@ -45,8 +38,7 @@ const AdminContent = () => {
       case "program":
         return <ProgramOutlineEditor />;
       case "analytics":
-        return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        return <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2 text-white">
@@ -72,11 +64,9 @@ const AdminContent = () => {
                 <p className="text-sm text-gray-400">Active participation rate</p>
               </CardContent>
             </Card>
-          </div>
-        );
+          </div>;
       default:
-        return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {/* Enhanced Overview Cards */}
             <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -121,13 +111,10 @@ const AdminContent = () => {
                 <p className="text-xs text-gray-400">Ongoing workshops</p>
               </CardContent>
             </Card>
-          </div>
-        );
+          </div>;
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
       
       <div className="relative z-20 container mx-auto p-6">
@@ -135,11 +122,7 @@ const AdminContent = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <img 
-                src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
-                alt="KNUST Logo" 
-                className="h-16 w-auto"
-              />
+              <img alt="KNUST Logo" className="h-16 w-auto" src="/lovable-uploads/203ba06e-92a1-4220-b166-c31ec24d5efa.png" />
               <div>
                 <h1 className="text-3xl font-bold text-white tracking-wide">
                   ADMIN DASHBOARD
@@ -148,18 +131,10 @@ const AdminContent = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                onClick={() => window.location.href = "/"}
-                variant="outline"
-                className="bg-gray-800/80 backdrop-blur-sm border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-              >
+              <Button onClick={() => window.location.href = "/"} variant="outline" className="bg-gray-800/80 backdrop-blur-sm border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400">
                 Back to App
               </Button>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className="bg-gray-800/80 backdrop-blur-sm text-red-400 border-red-500/30 hover:bg-red-900/20 hover:border-red-400"
-              >
+              <Button onClick={handleLogout} variant="outline" className="bg-gray-800/80 backdrop-blur-sm text-red-400 border-red-500/30 hover:bg-red-900/20 hover:border-red-400">
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
@@ -169,58 +144,23 @@ const AdminContent = () => {
 
         {/* Enhanced Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">
-          <Button
-            onClick={() => setCurrentSection("overview")}
-            variant={currentSection === "overview" ? "default" : "outline"}
-            className={currentSection === "overview" 
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white" 
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-          >
+          <Button onClick={() => setCurrentSection("overview")} variant={currentSection === "overview" ? "default" : "outline"} className={currentSection === "overview" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <Settings className="w-4 h-4 mr-2" />
             <span>Overview</span>
           </Button>
-          <Button
-            onClick={() => setCurrentSection("attendance")}
-            variant={currentSection === "attendance" ? "default" : "outline"}
-            className={currentSection === "attendance" 
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white" 
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-          >
+          <Button onClick={() => setCurrentSection("attendance")} variant={currentSection === "attendance" ? "default" : "outline"} className={currentSection === "attendance" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <Users className="w-4 h-4 mr-2" />
             <span>Attendance Records</span>
           </Button>
-          <Button
-            onClick={() => setCurrentSection("messages")}
-            variant={currentSection === "messages" ? "default" : "outline"}
-            className={currentSection === "messages" 
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white" 
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-          >
+          <Button onClick={() => setCurrentSection("messages")} variant={currentSection === "messages" ? "default" : "outline"} className={currentSection === "messages" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <MessageSquare className="w-4 h-4 mr-2" />
             <span>Inspiration Messages</span>
           </Button>
-          <Button
-            onClick={() => setCurrentSection("program")}
-            variant={currentSection === "program" ? "default" : "outline"}
-            className={currentSection === "program" 
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white" 
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-          >
+          <Button onClick={() => setCurrentSection("program")} variant={currentSection === "program" ? "default" : "outline"} className={currentSection === "program" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <Calendar className="w-4 h-4 mr-2" />
             <span>Program Outline</span>
           </Button>
-          <Button
-            onClick={() => setCurrentSection("analytics")}
-            variant={currentSection === "analytics" ? "default" : "outline"}
-            className={currentSection === "analytics" 
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white" 
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-          >
+          <Button onClick={() => setCurrentSection("analytics")} variant={currentSection === "analytics" ? "default" : "outline"} className={currentSection === "analytics" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <TrendingUp className="w-4 h-4 mr-2" />
             <span>Analytics</span>
           </Button>
@@ -229,16 +169,11 @@ const AdminContent = () => {
         {/* Main Content */}
         {renderContent()}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 const Admin = () => {
-  return (
-    <AdminProtection>
+  return <AdminProtection>
       <AdminContent />
-    </AdminProtection>
-  );
+    </AdminProtection>;
 };
-
 export default Admin;
