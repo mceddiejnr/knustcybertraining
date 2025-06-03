@@ -16,11 +16,23 @@ const Index = () => {
   };
 
   const handleNameSubmit = (name: string) => {
-    setAttendeeName(name);
-    // Save to localStorage (simulating database storage)
+    // Check if user already exists
     const existingAttendees = JSON.parse(localStorage.getItem("attendees") || "[]");
+    const existingUser = existingAttendees.find((attendee: any) => 
+      attendee.name.toLowerCase().trim() === name.toLowerCase().trim()
+    );
+
+    if (existingUser) {
+      // User already checked in, redirect to program page
+      console.log("User already registered, redirecting to program page");
+      window.location.href = "/program";
+      return;
+    }
+
+    // New user, proceed with registration
+    setAttendeeName(name);
     const newAttendee = {
-      name,
+      name: name.trim(),
       timestamp: new Date().toISOString(),
       id: Date.now()
     };
@@ -37,7 +49,6 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
       
-      {/* Content with higher z-index */}
       <div className="relative z-20">
         {currentState === "welcome" && (
           <QRCodeGenerator onScan={handleQRCodeScan} />

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, MapPin, Calendar, Users, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -146,7 +145,7 @@ const Program = () => {
                 </h1>
               </div>
               <p className="text-white/90 text-sm sm:text-base md:text-lg mb-6 font-medium">
-                "Securing Digital Workspaces: Awareness, Prevention, and Best Practices" 🛡️
+                "Cybersecurity Essentials: Staying Safe in a Digital Workplace" 🛡️
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs sm:text-sm">
@@ -156,7 +155,7 @@ const Program = () => {
                 </div>
                 <div className="flex items-center space-x-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                   <Clock className="w-4 h-4 flex-shrink-0 text-green-400" />
-                  <span className="font-medium">10:00 AM – 12:00 Noon</span>
+                  <span className="font-medium">10:00 AM – 12:00 PM</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm sm:col-span-2 lg:col-span-1">
                   <MapPin className="w-4 h-4 flex-shrink-0 text-green-400" />

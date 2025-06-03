@@ -7,28 +7,53 @@ import InspirationalMessageManager from "@/components/admin/InspirationalMessage
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
 import CyberBackground from "@/components/CyberBackground";
 import AdminProtection from "@/components/AdminProtection";
+
 type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics";
+
 interface AttendeeData {
   name: string;
   timestamp: string;
   id: number;
 }
+
 const AdminContent = () => {
   const [currentSection, setCurrentSection] = useState<AdminSection>("overview");
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [qrScans, setQrScans] = useState(0);
-  useEffect(() => {
-    // Load attendees from localStorage
+
+  const loadAttendees = () => {
     const savedAttendees = JSON.parse(localStorage.getItem("attendees") || "[]");
     setAttendees(savedAttendees);
+    return savedAttendees;
+  };
 
-    // Simulate QR code scans (could be tracked separately)
-    setQrScans(savedAttendees.length + Math.floor(Math.random() * 8) + 15);
+  useEffect(() => {
+    const initialAttendees = loadAttendees();
+    setQrScans(initialAttendees.length + Math.floor(Math.random() * 8) + 15);
+
+    // Listen for storage changes to update attendees list
+    const handleStorageChange = () => {
+      loadAttendees();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check for updates periodically
+    const interval = setInterval(() => {
+      loadAttendees();
+    }, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("adminAuthenticated");
     window.location.href = "/admin/login";
   };
+
   const renderContent = () => {
     switch (currentSection) {
       case "attendance":
@@ -38,7 +63,8 @@ const AdminContent = () => {
       case "program":
         return <ProgramOutlineEditor />;
       case "analytics":
-        return <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2 text-white">
@@ -64,10 +90,11 @@ const AdminContent = () => {
                 <p className="text-sm text-gray-400">Active participation rate</p>
               </CardContent>
             </Card>
-          </div>;
+          </div>
+        );
       default:
-        return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Enhanced Overview Cards */}
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 hover:shadow-lg transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">Total Attendees</CardTitle>
@@ -111,14 +138,16 @@ const AdminContent = () => {
                 <p className="text-xs text-gray-400">Ongoing workshops</p>
               </CardContent>
             </Card>
-          </div>;
+          </div>
+        );
     }
   };
-  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
       
       <div className="relative z-20 container mx-auto p-6">
-        {/* Enhanced Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -142,7 +171,6 @@ const AdminContent = () => {
           </div>
         </div>
 
-        {/* Enhanced Navigation */}
         <div className="flex flex-wrap gap-2 mb-8">
           <Button onClick={() => setCurrentSection("overview")} variant={currentSection === "overview" ? "default" : "outline"} className={currentSection === "overview" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <Settings className="w-4 h-4 mr-2" />
@@ -166,14 +194,18 @@ const AdminContent = () => {
           </Button>
         </div>
 
-        {/* Main Content */}
         {renderContent()}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 const Admin = () => {
-  return <AdminProtection>
+  return (
+    <AdminProtection>
       <AdminContent />
-    </AdminProtection>;
+    </AdminProtection>
+  );
 };
+
 export default Admin;

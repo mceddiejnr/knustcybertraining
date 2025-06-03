@@ -1,11 +1,11 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Search, ArrowUpDown } from "lucide-react";
+import { Download, Search, ArrowUpDown, Edit, Trash2, Save, X } from "lucide-react";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 interface AttendeeData {
   name: string;
@@ -17,9 +17,13 @@ interface AttendancePanelProps {
   attendees: AttendeeData[];
 }
 
-const AttendancePanel = ({ attendees }: AttendancePanelProps) => {
+const AttendancePanel = ({ attendees: initialAttendees }: AttendancePanelProps) => {
+  const [attendees, setAttendees] = useState<AttendeeData[]>(initialAttendees);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const { toast } = useToast();
 
   const filteredAndSortedAttendees = attendees
     .filter(attendee => 
@@ -30,6 +34,52 @@ const AttendancePanel = ({ attendees }: AttendancePanelProps) => {
       const dateB = new Date(b.timestamp);
       return sortOrder === "desc" ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
     });
+
+  const updateLocalStorage = (updatedAttendees: AttendeeData[]) => {
+    localStorage.setItem("attendees", JSON.stringify(updatedAttendees));
+    setAttendees(updatedAttendees);
+  };
+
+  const deleteAttendee = (id: number) => {
+    const updatedAttendees = attendees.filter(attendee => attendee.id !== id);
+    updateLocalStorage(updatedAttendees);
+    toast({
+      title: "Attendee deleted",
+      description: "The attendee record has been removed successfully.",
+    });
+  };
+
+  const startEdit = (attendee: AttendeeData) => {
+    setEditingId(attendee.id);
+    setEditName(attendee.name);
+  };
+
+  const saveEdit = (id: number) => {
+    if (!editName.trim()) {
+      toast({
+        title: "Invalid name",
+        description: "Name cannot be empty.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const updatedAttendees = attendees.map(attendee =>
+      attendee.id === id ? { ...attendee, name: editName.trim() } : attendee
+    );
+    updateLocalStorage(updatedAttendees);
+    setEditingId(null);
+    setEditName("");
+    toast({
+      title: "Attendee updated",
+      description: "The attendee record has been updated successfully.",
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditName("");
+  };
 
   const exportToCSV = () => {
     const headers = ["Name", "Timestamp"];
@@ -384,7 +434,7 @@ const AttendancePanel = ({ attendees }: AttendancePanelProps) => {
           </div>
         </div>
 
-        {/* Table */}
+        {/* Enhanced Table with Edit/Delete */}
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -393,22 +443,74 @@ const AttendancePanel = ({ attendees }: AttendancePanelProps) => {
                 <TableHead>Date</TableHead>
                 <TableHead>Time</TableHead>
                 <TableHead className="text-right">ID</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredAndSortedAttendees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                     {searchTerm ? "No attendees found matching your search." : "No attendees registered yet."}
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredAndSortedAttendees.map((attendee) => (
                   <TableRow key={attendee.id}>
-                    <TableCell className="font-medium">{attendee.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {editingId === attendee.id ? (
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            className="h-8"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveEdit(attendee.id);
+                              if (e.key === 'Escape') cancelEdit();
+                            }}
+                          />
+                          <Button
+                            onClick={() => saveEdit(attendee.id)}
+                            size="sm"
+                            variant="outline"
+                          >
+                            <Save className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            onClick={cancelEdit}
+                            size="sm"
+                            variant="outline"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        attendee.name
+                      )}
+                    </TableCell>
                     <TableCell>{format(new Date(attendee.timestamp), "MMM dd, yyyy")}</TableCell>
                     <TableCell>{format(new Date(attendee.timestamp), "h:mm a")}</TableCell>
                     <TableCell className="text-right">{attendee.id}</TableCell>
+                    <TableCell className="text-right">
+                      {editingId === attendee.id ? null : (
+                        <div className="flex justify-end space-x-2">
+                          <Button
+                            onClick={() => startEdit(attendee)}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={() => deleteAttendee(attendee.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))
               )}
