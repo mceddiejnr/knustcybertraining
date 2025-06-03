@@ -1,26 +1,18 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CyberBackground from "@/components/CyberBackground";
 import SecurityIcon from "@/components/SecurityIcon";
 import LoginForm from "@/components/LoginForm";
-
 const AdminLogin = () => {
   const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
       
       <div className="relative z-20 min-h-screen flex items-center justify-center p-2">
         {/* KNUST Logo */}
         <div className="absolute top-4 left-4">
-          <img 
-            src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
-            alt="KNUST Logo" 
-            className="h-8 sm:h-10 w-auto drop-shadow-lg"
-          />
+          <img alt="KNUST Logo" className="h-8 sm:h-10 w-auto drop-shadow-lg" src="/lovable-uploads/1a08e6d9-8dd4-4b15-b847-a9ad35ab8a14.png" />
         </div>
 
         <Card className="w-full max-w-sm bg-gray-800/95 backdrop-blur-xl shadow-2xl border border-green-500/30 rounded-2xl overflow-hidden relative">
@@ -39,7 +31,7 @@ const AdminLogin = () => {
                 CYBERSECURITY ADMIN PORTAL
               </div>
               <CardDescription className="text-gray-300 font-medium text-xs leading-relaxed">
-                Authorized Personnel Only<br/>
+                Authorized Personnel Only<br />
                 <span className="text-green-400 text-xs">Enter your security credentials</span>
               </CardDescription>
             </div>
@@ -55,19 +47,13 @@ const AdminLogin = () => {
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
               </div>
               
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/")}
-                className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50"
-              >
+              <Button variant="ghost" onClick={() => navigate("/")} className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50">
                 ← Return to Main System
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AdminLogin;
