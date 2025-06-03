@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Shield, Lock, Eye, EyeOff, User, Terminal, ShieldCheck, Fingerprint } from "lucide-react";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { useToast } from "@/hooks/use-toast";
 
@@ -32,24 +32,43 @@ const AdminLogin = () => {
           credentials.password === ADMIN_CREDENTIALS.password) {
         localStorage.setItem("adminAuthenticated", "true");
         toast({
-          title: "Login Successful",
-          description: "Welcome to the admin dashboard!",
+          title: "Access Granted",
+          description: "Welcome to the secure admin dashboard",
         });
         navigate("/admin");
       } else {
         toast({
-          title: "Login Failed",
-          description: "Invalid username or password",
+          title: "Access Denied",
+          description: "Invalid credentials. Please try again.",
           variant: "destructive",
         });
       }
       setIsLoading(false);
-    }, 1000);
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-gray-50 to-green-100 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <AnimatedBackground />
+      
+      {/* Cyber Grid Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }}></div>
+      </div>
+
+      {/* Floating Security Icons */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <Shield className="absolute top-20 left-10 w-8 h-8 text-green-500/20 animate-pulse" />
+        <Terminal className="absolute top-40 right-20 w-6 h-6 text-green-400/20 animate-bounce" />
+        <ShieldCheck className="absolute bottom-40 left-20 w-7 h-7 text-green-300/20 animate-pulse" />
+        <Fingerprint className="absolute bottom-20 right-10 w-9 h-9 text-green-500/20 animate-pulse" />
+      </div>
       
       <div className="relative z-20 min-h-screen flex items-center justify-center p-4">
         {/* KNUST Logo */}
@@ -61,59 +80,79 @@ const AdminLogin = () => {
           />
         </div>
 
-        <Card className="w-full max-w-md bg-white/98 backdrop-blur-xl shadow-2xl border border-green-200/50 rounded-3xl overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
+        <Card className="w-full max-w-md bg-gray-800/95 backdrop-blur-xl shadow-2xl border border-green-500/30 rounded-3xl overflow-hidden relative">
+          {/* Glowing border effect */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-transparent to-green-500/20 blur-sm"></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
           
-          <CardHeader className="text-center space-y-4 pt-8">
+          <CardHeader className="text-center space-y-6 pt-8 relative">
+            {/* Main Security Icon */}
             <div className="flex justify-center">
-              <div className="p-4 bg-gradient-to-br from-green-600 to-green-700 rounded-full shadow-lg relative">
-                <Lock className="w-8 h-8 text-white" />
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                  <Shield className="w-3 h-3 text-white" />
+              <div className="relative">
+                <div className="p-6 bg-gradient-to-br from-green-600 to-green-700 rounded-full shadow-2xl relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-transparent rounded-full animate-pulse"></div>
+                  <Shield className="w-10 h-10 text-white relative z-10" />
+                  
+                  {/* Orbiting Security Elements */}
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center animate-spin">
+                    <Lock className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center animate-bounce">
+                    <Terminal className="w-3 h-3 text-white" />
+                  </div>
                 </div>
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              KNUST LCM
-            </CardTitle>
-            <CardDescription className="text-gray-600 font-medium">
-              Enter your credentials to access the admin dashboard
-            </CardDescription>
+
+            <div className="space-y-2">
+              <CardTitle className="text-3xl font-bold text-white tracking-wide">
+                SECURE ACCESS
+              </CardTitle>
+              <div className="text-green-400 font-mono text-sm tracking-wider">
+                CYBERSECURITY ADMIN PORTAL
+              </div>
+              <CardDescription className="text-gray-300 font-medium text-sm leading-relaxed">
+                Authorized Personnel Only<br/>
+                <span className="text-green-400 text-xs">Enter your security credentials to continue</span>
+              </CardDescription>
+            </div>
           </CardHeader>
           
           <CardContent className="px-8 pb-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-gray-700 font-medium text-sm">
-                  Username
+                <Label htmlFor="username" className="text-gray-200 font-medium text-sm flex items-center space-x-2">
+                  <User className="w-4 h-4" />
+                  <span>Administrator ID</span>
                 </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-400/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <Input
                     id="username"
                     type="text"
                     value={credentials.username}
                     onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                    className="pl-10 bg-yellow-50 border-gray-200 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3"
+                    className="relative bg-gray-700/80 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3 text-white placeholder:text-gray-400 font-mono"
                     placeholder="admin"
                     required
                   />
                 </div>
-                <p className="text-xs text-gray-500">Username: admin</p>
+                <p className="text-xs text-green-400 font-mono">Demo: admin</p>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium text-sm">
-                  Password
+                <Label htmlFor="password" className="text-gray-200 font-medium text-sm flex items-center space-x-2">
+                  <Lock className="w-4 h-4" />
+                  <span>Security Key</span>
                 </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-400/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={credentials.password}
                     onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    className="pl-10 pr-10 bg-yellow-50 border-gray-200 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3"
+                    className="relative bg-gray-700/80 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-3 pr-12 text-white placeholder:text-gray-400 font-mono"
                     placeholder="••••••••"
                     required
                   />
@@ -121,42 +160,52 @@ const AdminLogin = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-gray-400 hover:text-green-400"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-500" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-500" />
+                      <Eye className="h-4 w-4" />
                     )}
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500">Password: admin123</p>
+                <p className="text-xs text-green-400 font-mono">Demo: admin123</p>
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-base relative overflow-hidden"
                 disabled={isLoading}
               >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-600/20 animate-pulse"></div>
                 {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Signing In...</span>
+                  <div className="flex items-center space-x-3 relative z-10">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="font-mono">AUTHENTICATING...</span>
                   </div>
                 ) : (
-                  "Sign In"
+                  <div className="flex items-center space-x-2 relative z-10">
+                    <ShieldCheck className="w-5 h-5" />
+                    <span className="font-mono">AUTHENTICATE</span>
+                  </div>
                 )}
               </Button>
             </form>
             
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center space-y-4">
+              <div className="flex items-center justify-center space-x-2 text-gray-400 text-xs">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="font-mono">SECURE CONNECTION ACTIVE</span>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+              
               <Button
                 variant="ghost"
                 onClick={() => navigate("/")}
-                className="text-gray-600 hover:text-gray-800 text-sm"
+                className="text-gray-400 hover:text-white text-sm font-mono hover:bg-gray-700/50"
               >
-                Back to Main App
+                ← Return to Main System
               </Button>
             </div>
           </CardContent>
