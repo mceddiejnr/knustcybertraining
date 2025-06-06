@@ -5,17 +5,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, Shield, UserCheck, Crown, Trash2 } from "lucide-react";
 import PasswordChangeDialog from "./PasswordChangeDialog";
-
-interface UserRole {
-  id: string;
-  name: string;
-  role: "admin" | "facilitator" | "participant" | "guest";
-  email: string;
-  password?: string;
-  permissions: string[];
-  lastActive?: string;
-  createdAt: string;
-}
+import { UserRole } from "@/types/user";
 
 interface UserTableRowProps {
   user: UserRole;

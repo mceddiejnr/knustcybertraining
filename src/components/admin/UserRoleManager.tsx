@@ -7,17 +7,8 @@ import { Users, Search } from "lucide-react";
 import { toast } from "sonner";
 import UserFormDialog from "./UserFormDialog";
 import UserTableRow from "./UserTableRow";
-
-interface UserRole {
-  id: string;
-  name: string;
-  role: "admin" | "facilitator" | "participant" | "guest";
-  email: string;
-  password?: string;
-  permissions: string[];
-  lastActive?: string;
-  createdAt: string;
-}
+import { UserRole } from "@/types/user";
+import { getDefaultPermissions, getDefaultUsers } from "@/utils/userUtils";
 
 const UserRoleManager = () => {
   const [users, setUsers] = useState<UserRole[]>([]);
@@ -26,39 +17,7 @@ const UserRoleManager = () => {
   useEffect(() => {
     const savedUsers = JSON.parse(localStorage.getItem("userRoles") || "[]");
     if (savedUsers.length === 0) {
-      // Initialize with some default users
-      const defaultUsers: UserRole[] = [
-        {
-          id: "1",
-          name: "Admin User",
-          role: "admin",
-          email: "admin@knust.edu.gh",
-          password: "admin123",
-          permissions: ["all"],
-          lastActive: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: "2",
-          name: "Deputy Director, ISTAD",
-          role: "facilitator",
-          email: "istad@knust.edu.gh",
-          password: "istad123",
-          permissions: ["manage_program", "view_analytics"],
-          lastActive: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: "3",
-          name: "University Librarian",
-          role: "facilitator",
-          email: "librarian@knust.edu.gh",
-          password: "lib123",
-          permissions: ["manage_program"],
-          lastActive: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        }
-      ];
+      const defaultUsers = getDefaultUsers();
       setUsers(defaultUsers);
       localStorage.setItem("userRoles", JSON.stringify(defaultUsers));
     } else {
@@ -111,21 +70,6 @@ const UserRoleManager = () => {
         : user
     );
     saveUsers(updatedUsers);
-  };
-
-  const getDefaultPermissions = (role: string): string[] => {
-    switch (role) {
-      case "admin":
-        return ["all"];
-      case "facilitator":
-        return ["manage_program", "view_analytics", "manage_attendance"];
-      case "participant":
-        return ["view_program"];
-      case "guest":
-        return ["view_program"];
-      default:
-        return [];
-    }
   };
 
   const filteredUsers = users.filter(user =>

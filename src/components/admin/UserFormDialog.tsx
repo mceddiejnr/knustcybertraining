@@ -7,17 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-
-interface UserRole {
-  id: string;
-  name: string;
-  role: "admin" | "facilitator" | "participant" | "guest";
-  email: string;
-  password?: string;
-  permissions: string[];
-  lastActive?: string;
-  createdAt: string;
-}
+import { UserRole } from "@/types/user";
+import { getDefaultPermissions } from "@/utils/userUtils";
 
 interface UserFormDialogProps {
   users: UserRole[];
@@ -31,21 +22,6 @@ const UserFormDialog = ({ users, onAddUser }: UserFormDialogProps) => {
   const [newUserRole, setNewUserRole] = useState<"admin" | "facilitator" | "participant" | "guest">("participant");
   const [showPassword, setShowPassword] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const getDefaultPermissions = (role: string): string[] => {
-    switch (role) {
-      case "admin":
-        return ["all"];
-      case "facilitator":
-        return ["manage_program", "view_analytics", "manage_attendance"];
-      case "participant":
-        return ["view_program"];
-      case "guest":
-        return ["view_program"];
-      default:
-        return [];
-    }
-  };
 
   const validateForm = () => {
     if (!newUserName.trim()) {
