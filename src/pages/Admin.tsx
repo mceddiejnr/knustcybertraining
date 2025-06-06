@@ -1,14 +1,16 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, QrCode, Clock, Settings, MessageSquare, Calendar, LogOut, Shield, TrendingUp, Activity } from "lucide-react";
+import { Users, QrCode, Clock, Settings, MessageSquare, Calendar, LogOut, Shield, TrendingUp, Activity, KeyRound } from "lucide-react";
 import AttendancePanel from "@/components/admin/AttendancePanel";
 import InspirationalMessageManager from "@/components/admin/InspirationalMessageManager";
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
+import AccessCodeManager from "@/components/admin/AccessCodeManager";
 import CyberBackground from "@/components/CyberBackground";
 import AdminProtection from "@/components/AdminProtection";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes";
 
 interface AttendeeData {
   name: string;
@@ -62,6 +64,8 @@ const AdminContent = () => {
         return <InspirationalMessageManager />;
       case "program":
         return <ProgramOutlineEditor />;
+      case "access-codes":
+        return <AccessCodeManager />;
       case "analytics":
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -179,6 +183,10 @@ const AdminContent = () => {
           <Button onClick={() => setCurrentSection("attendance")} variant={currentSection === "attendance" ? "default" : "outline"} className={currentSection === "attendance" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <Users className="w-4 h-4 mr-2" />
             <span>Attendance Records</span>
+          </Button>
+          <Button onClick={() => setCurrentSection("access-codes")} variant={currentSection === "access-codes" ? "default" : "outline"} className={currentSection === "access-codes" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
+            <KeyRound className="w-4 h-4 mr-2" />
+            <span>Access Codes</span>
           </Button>
           <Button onClick={() => setCurrentSection("messages")} variant={currentSection === "messages" ? "default" : "outline"} className={currentSection === "messages" ? "bg-gradient-to-r from-green-600 to-green-700 text-white" : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"}>
             <MessageSquare className="w-4 h-4 mr-2" />
