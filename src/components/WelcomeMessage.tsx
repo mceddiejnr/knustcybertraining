@@ -1,33 +1,25 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Shield, Award, Lock } from "lucide-react";
-
 interface WelcomeMessageProps {
   onNameSubmit: (name: string) => void;
 }
-
-const WelcomeMessage = ({ onNameSubmit }: WelcomeMessageProps) => {
+const WelcomeMessage = ({
+  onNameSubmit
+}: WelcomeMessageProps) => {
   const [name, setName] = useState("");
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
       onNameSubmit(name.trim());
     }
   };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 relative">
+  return <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 relative">
       {/* KNUST Logo */}
       <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
-        <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
-          alt="KNUST Logo" 
-          className="h-8 sm:h-12 w-auto drop-shadow-lg"
-        />
+        <img alt="KNUST Logo" className="h-8 sm:h-12 w-auto drop-shadow-lg" src="/lovable-uploads/deff670d-7cf7-4032-b12d-e72805d49181.png" />
       </div>
 
       <div className="max-w-xs sm:max-w-sm w-full bg-gray-800/95 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-2xl border border-green-500/30 p-3 sm:p-5 relative overflow-hidden">
@@ -65,29 +57,15 @@ const WelcomeMessage = ({ onNameSubmit }: WelcomeMessageProps) => {
               <Label htmlFor="fullName" className="text-xs sm:text-sm font-semibold text-gray-200 mb-1 block font-mono">
                 Full Name ✨
               </Label>
-              <Input
-                id="fullName"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your full name"
-                className="text-xs sm:text-sm py-2 sm:py-3 bg-gray-700/80 border-gray-600 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/30 rounded-lg shadow-sm font-mono h-8 sm:h-10"
-                required
-              />
+              <Input id="fullName" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter your full name" className="text-xs sm:text-sm py-2 sm:py-3 bg-gray-700/80 border-gray-600 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/30 rounded-lg shadow-sm font-mono h-8 sm:h-10" required />
             </div>
             
-            <Button 
-              type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 sm:py-3 text-xs sm:text-sm rounded-lg transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg font-mono h-8 sm:h-auto"
-              disabled={!name.trim()}
-            >
+            <Button type="submit" className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 sm:py-3 text-xs sm:text-sm rounded-lg transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg font-mono h-8 sm:h-auto" disabled={!name.trim()}>
               CONTINUE TO TRAINING 🚀
             </Button>
           </form>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default WelcomeMessage;
