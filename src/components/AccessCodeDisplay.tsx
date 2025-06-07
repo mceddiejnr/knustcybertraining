@@ -1,19 +1,19 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Copy, CheckCircle, Eye, EyeOff } from "lucide-react";
-
 interface AccessCodeDisplayProps {
   attendeeName: string;
   accessCode: string;
   onContinue: () => void;
 }
-
-const AccessCodeDisplay = ({ attendeeName, accessCode, onContinue }: AccessCodeDisplayProps) => {
+const AccessCodeDisplay = ({
+  attendeeName,
+  accessCode,
+  onContinue
+}: AccessCodeDisplayProps) => {
   const [copied, setCopied] = useState(false);
   const [showCode, setShowCode] = useState(true);
-
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(accessCode);
@@ -23,16 +23,10 @@ const AccessCodeDisplay = ({ attendeeName, accessCode, onContinue }: AccessCodeD
       console.log('Failed to copy access code');
     }
   };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 relative">
+  return <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 relative">
       {/* KNUST Logo */}
       <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
-        <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
-          alt="KNUST Logo" 
-          className="h-8 sm:h-12 w-auto drop-shadow-lg"
-        />
+        <img alt="KNUST Logo" className="h-8 sm:h-12 w-auto drop-shadow-lg" src="/lovable-uploads/08bcbd2c-89f1-49eb-9f54-68c67e33cddd.png" />
       </div>
 
       <div className="max-w-sm w-full bg-gray-800/95 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-2xl border border-green-500/30 p-4 sm:p-6 relative overflow-hidden">
@@ -68,12 +62,7 @@ const AccessCodeDisplay = ({ attendeeName, accessCode, onContinue }: AccessCodeD
               <div className="bg-gray-800/80 rounded-lg p-3 sm:p-4 border border-green-500/30">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-xs font-mono">Save this code:</span>
-                  <Button
-                    onClick={() => setShowCode(!showCode)}
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 text-gray-400 hover:text-white"
-                  >
+                  <Button onClick={() => setShowCode(!showCode)} variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400 hover:text-white">
                     {showCode ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                   </Button>
                 </div>
@@ -81,23 +70,14 @@ const AccessCodeDisplay = ({ attendeeName, accessCode, onContinue }: AccessCodeD
                   <div className="text-2xl sm:text-3xl font-bold text-green-400 font-mono tracking-widest mb-2">
                     {showCode ? accessCode : "••••••"}
                   </div>
-                  <Button
-                    onClick={copyToClipboard}
-                    variant="outline"
-                    size="sm"
-                    className="border-green-500/30 text-green-400 hover:bg-green-500/10 hover:border-green-400"
-                  >
-                    {copied ? (
-                      <>
+                  <Button onClick={copyToClipboard} variant="outline" size="sm" className="border-green-500/30 text-green-400 hover:bg-green-500/10 hover:border-green-400">
+                    {copied ? <>
                         <CheckCircle className="w-3 h-3 mr-1" />
                         Copied!
-                      </>
-                    ) : (
-                      <>
+                      </> : <>
                         <Copy className="w-3 h-3 mr-1" />
                         Copy Code
-                      </>
-                    )}
+                      </>}
                   </Button>
                 </div>
               </div>
@@ -110,16 +90,11 @@ const AccessCodeDisplay = ({ attendeeName, accessCode, onContinue }: AccessCodeD
             </p>
           </div>
 
-          <Button 
-            onClick={onContinue}
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 text-sm sm:text-base rounded-lg transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg font-mono"
-          >
+          <Button onClick={onContinue} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 text-sm sm:text-base rounded-lg transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg font-mono">
             CONTINUE TO WORKSHOP 🚀
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AccessCodeDisplay;
