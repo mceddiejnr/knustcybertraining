@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Book, Folder, Link, Video, Globe, Star } from "lucide-react";
+import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen } from "lucide-react";
 
 interface Resource {
   id: string;
