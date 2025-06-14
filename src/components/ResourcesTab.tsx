@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen } from "lucide-react";
+import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen, Eye } from "lucide-react";
 
 interface Resource {
   id: string;
@@ -211,6 +211,56 @@ const ResourcesTab = () => {
     }
   };
 
+  const handleView = (resource: Resource) => {
+    if (resource.url) {
+      window.open(resource.url, '_blank');
+    } else if (resource.filename) {
+      // Create a preview content for the file
+      const content = `
+        <html>
+          <head>
+            <title>${resource.title} - Preview</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+              .header { background: #1f2937; color: white; padding: 20px; margin: -40px -40px 40px -40px; }
+              .content { max-width: 800px; }
+              .description { color: #666; font-style: italic; margin-bottom: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>${resource.title}</h1>
+              <p>Resource Preview</p>
+            </div>
+            <div class="content">
+              <p class="description">${resource.description}</p>
+              <h2>About This Resource</h2>
+              <p>This is a preview of the <strong>${resource.title}</strong> resource.</p>
+              <p>In a real implementation, this would display the actual PDF content or document preview.</p>
+              <h3>Key Features:</h3>
+              <ul>
+                <li>Comprehensive coverage of ${resource.type} topics</li>
+                <li>Practical examples and guidelines</li>
+                <li>Professional formatting and design</li>
+                <li>Easy to follow structure</li>
+              </ul>
+              <p><em>To get the full content, please download the complete ${resource.filename} file.</em></p>
+            </div>
+          </body>
+        </html>
+      `;
+      
+      const blob = new Blob([content], { type: 'text/html' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      
+      // Clean up the URL after a delay
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 1000);
+    }
+  };
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star 
@@ -255,23 +305,37 @@ const ResourcesTab = () => {
           </span>
         </div>
 
-        <Button 
-          onClick={() => handleDownload(resource)}
-          size="sm" 
-          className={`w-full text-white ${getButtonColor(resource.type)}`}
-        >
-          {resource.type === 'link' || resource.type === 'video' || resource.type === 'interactive' ? (
-            <>
-              <Link className="w-4 h-4 mr-2" />
-              Open Link
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4 mr-2" />
-              Download PDF
-            </>
+        <div className="flex gap-2">
+          {(resource.filename || resource.url) && (
+            <Button 
+              onClick={() => handleView(resource)}
+              size="sm" 
+              variant="outline"
+              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View
+            </Button>
           )}
-        </Button>
+          
+          <Button 
+            onClick={() => handleDownload(resource)}
+            size="sm" 
+            className={`flex-1 text-white ${getButtonColor(resource.type)}`}
+          >
+            {resource.type === 'link' || resource.type === 'video' || resource.type === 'interactive' ? (
+              <>
+                <Link className="w-4 h-4 mr-2" />
+                Open Link
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Download PDF
+              </>
+            )}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
