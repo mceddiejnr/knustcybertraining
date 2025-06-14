@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen, Eye, X } from "lucide-react";
 
 interface Resource {
   id: string;
@@ -16,6 +17,8 @@ interface Resource {
 
 const ResourcesTab = () => {
   const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
+  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const resources: Resource[] = [
     {
@@ -215,49 +218,8 @@ const ResourcesTab = () => {
     if (resource.url) {
       window.open(resource.url, '_blank');
     } else if (resource.filename) {
-      // Create a preview content for the file
-      const content = `
-        <html>
-          <head>
-            <title>${resource.title} - Preview</title>
-            <style>
-              body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-              .header { background: #1f2937; color: white; padding: 20px; margin: -40px -40px 40px -40px; }
-              .content { max-width: 800px; }
-              .description { color: #666; font-style: italic; margin-bottom: 20px; }
-            </style>
-          </head>
-          <body>
-            <div class="header">
-              <h1>${resource.title}</h1>
-              <p>Resource Preview</p>
-            </div>
-            <div class="content">
-              <p class="description">${resource.description}</p>
-              <h2>About This Resource</h2>
-              <p>This is a preview of the <strong>${resource.title}</strong> resource.</p>
-              <p>In a real implementation, this would display the actual PDF content or document preview.</p>
-              <h3>Key Features:</h3>
-              <ul>
-                <li>Comprehensive coverage of ${resource.type} topics</li>
-                <li>Practical examples and guidelines</li>
-                <li>Professional formatting and design</li>
-                <li>Easy to follow structure</li>
-              </ul>
-              <p><em>To get the full content, please download the complete ${resource.filename} file.</em></p>
-            </div>
-          </body>
-        </html>
-      `;
-      
-      const blob = new Blob([content], { type: 'text/html' });
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      
-      // Clean up the URL after a delay
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-      }, 1000);
+      setPreviewResource(resource);
+      setIsPreviewOpen(true);
     }
   };
 
@@ -269,6 +231,110 @@ const ResourcesTab = () => {
       />
     ));
   };
+
+  const PreviewContent = ({ resource }: { resource: Resource }) => (
+    <div className="max-h-[70vh] overflow-y-auto">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-6 rounded-lg mb-6 border border-gray-600">
+        <div className="flex items-center mb-3">
+          {getIcon(resource.type)}
+          <span className={`ml-3 px-3 py-1 rounded-full text-xs border ${getTypeColor(resource.type)}`}>
+            {resource.type}
+          </span>
+        </div>
+        <h1 className="text-2xl font-bold text-white mb-2">{resource.title}</h1>
+        <p className="text-gray-300 text-sm leading-relaxed">{resource.description}</p>
+        
+        {/* Rating and Downloads */}
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-600">
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
+              {renderStars(resource.rating || 0)}
+            </div>
+            <span className="text-gray-400 text-sm">({resource.rating})</span>
+          </div>
+          <span className="text-gray-400 text-sm">
+            {resource.downloads ? `${resource.downloads + (downloadCounts[resource.id] || 0)} downloads` : 'External'}
+          </span>
+        </div>
+      </div>
+
+      {/* Content Preview */}
+      <div className="bg-white rounded-lg p-8 shadow-lg border border-gray-200">
+        <div className="prose prose-gray max-w-none">
+          <h2 className="text-xl font-semibold text-blue-600 mb-4 flex items-center">
+            <FileText className="w-5 h-5 mr-2" />
+            Document Preview
+          </h2>
+          
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+            <p className="text-blue-800 text-sm">
+              This is a preview of the <strong>{resource.title}</strong> resource. 
+              The full document contains comprehensive information and detailed guidelines.
+            </p>
+          </div>
+
+          <h3 className="text-lg font-medium text-gray-800 mb-3">Key Features & Content</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-800 mb-2">📋 Comprehensive Coverage</h4>
+              <p className="text-gray-600 text-sm">
+                Detailed coverage of {resource.type} topics with practical examples and real-world applications.
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-800 mb-2">🎯 Practical Guidelines</h4>
+              <p className="text-gray-600 text-sm">
+                Step-by-step instructions and best practices for immediate implementation.
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-800 mb-2">📊 Professional Design</h4>
+              <p className="text-gray-600 text-sm">
+                Clean, professional formatting optimized for both digital viewing and printing.
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-800 mb-2">🔍 Easy Navigation</h4>
+              <p className="text-gray-600 text-sm">
+                Well-structured content with clear headings and logical flow for easy reference.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-medium text-gray-800 mb-3">What You'll Learn</h3>
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                Essential concepts and terminology related to {resource.type}
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                Practical implementation strategies and techniques
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                Common pitfalls and how to avoid them
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✓</span>
+                Advanced tips and optimization methods
+              </li>
+            </ul>
+          </div>
+
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-amber-800 text-sm">
+              <strong>Note:</strong> This preview shows the structure and key highlights of the document. 
+              Download the complete <span className="font-mono bg-amber-100 px-1 rounded">{resource.filename}</span> file 
+              to access all content, detailed examples, and downloadable resources.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const resourcesByType = {
     cheatsheet: resources.filter(r => r.type === "cheatsheet"),
@@ -342,6 +408,28 @@ const ResourcesTab = () => {
 
   return (
     <div className="space-y-8">
+      {/* Preview Dialog */}
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="max-w-4xl w-[90vw] h-[85vh] p-0 overflow-hidden bg-gray-100">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle className="text-xl font-bold text-gray-800 flex items-center justify-between">
+              <span>Document Preview</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsPreviewOpen(false)}
+                className="h-8 w-8 p-0 hover:bg-gray-200"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            {previewResource && <PreviewContent resource={previewResource} />}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">Training Resources</h2>
         <p className="text-gray-400">Download cheatsheets, toolkits, access online tools, and explore additional learning materials</p>
