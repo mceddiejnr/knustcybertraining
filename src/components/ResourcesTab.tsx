@@ -234,102 +234,152 @@ const ResourcesTab = () => {
 
   const PreviewContent = ({ resource }: { resource: Resource }) => (
     <div className="h-full overflow-y-auto">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-gray-800 to-gray-700 p-4 md:p-6 rounded-lg mb-4 md:mb-6 border border-gray-600">
-        <div className="flex items-center mb-3">
-          {getIcon(resource.type)}
-          <span className={`ml-3 px-2 md:px-3 py-1 rounded-full text-xs border ${getTypeColor(resource.type)}`}>
-            {resource.type}
-          </span>
-        </div>
-        <h1 className="text-lg md:text-2xl font-bold text-white mb-2">{resource.title}</h1>
-        <p className="text-gray-300 text-xs md:text-sm leading-relaxed">{resource.description}</p>
-        
-        {/* Rating and Downloads */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-600">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              {renderStars(resource.rating || 0)}
+      {/* Elegant Header Section */}
+      <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-2xl mb-8 shadow-2xl border border-slate-700/50 backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl"></div>
+        <div className="relative">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                {getIcon(resource.type)}
+              </div>
+              <span className={`px-4 py-2 rounded-full text-sm font-medium border backdrop-blur-sm ${getTypeColor(resource.type)}`}>
+                {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
+              </span>
             </div>
-            <span className="text-gray-400 text-xs md:text-sm">({resource.rating})</span>
+            <div className="flex items-center space-x-4 text-slate-300">
+              <div className="flex items-center space-x-1">
+                {renderStars(resource.rating || 0)}
+                <span className="text-sm font-medium ml-2">({resource.rating})</span>
+              </div>
+              <div className="h-4 w-px bg-slate-600"></div>
+              <span className="text-sm">
+                {resource.downloads ? `${resource.downloads + (downloadCounts[resource.id] || 0)} downloads` : 'External Resource'}
+              </span>
+            </div>
           </div>
-          <span className="text-gray-400 text-xs md:text-sm">
-            {resource.downloads ? `${resource.downloads + (downloadCounts[resource.id] || 0)} downloads` : 'External'}
-          </span>
+          
+          <h1 className="text-3xl font-bold text-white mb-4 leading-tight">{resource.title}</h1>
+          <p className="text-slate-300 text-lg leading-relaxed max-w-4xl">{resource.description}</p>
         </div>
       </div>
 
-      {/* Content Preview */}
-      <div className="bg-white rounded-lg p-4 md:p-8 shadow-lg border border-gray-200">
-        <div className="prose prose-gray max-w-none">
-          <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4 flex items-center">
-            <FileText className="w-4 md:w-5 h-4 md:h-5 mr-2" />
-            Document Preview
-          </h2>
-          
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-3 md:p-4 mb-4 md:mb-6">
-            <p className="text-blue-800 text-xs md:text-sm">
-              This is a preview of the <strong>{resource.title}</strong> resource. 
-              The full document contains comprehensive information and detailed guidelines.
-            </p>
+      {/* Elegant Content Preview */}
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+        {/* Content Header */}
+        <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-8 py-6 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <FileText className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Document Preview</h2>
+              <p className="text-gray-600 text-sm">Comprehensive {resource.type} resource</p>
+            </div>
           </div>
+        </div>
 
-          <h3 className="text-base md:text-lg font-medium text-gray-800 mb-3">Key Features & Content</h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
-            <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2 text-sm md:text-base">📋 Comprehensive Coverage</h4>
-              <p className="text-gray-600 text-xs md:text-sm">
-                Detailed coverage of {resource.type} topics with practical examples and real-world applications.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2 text-sm md:text-base">🎯 Practical Guidelines</h4>
-              <p className="text-gray-600 text-xs md:text-sm">
-                Step-by-step instructions and best practices for immediate implementation.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2 text-sm md:text-base">📊 Professional Design</h4>
-              <p className="text-gray-600 text-xs md:text-sm">
-                Clean, professional formatting optimized for both digital viewing and printing.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2 text-sm md:text-base">🔍 Easy Navigation</h4>
-              <p className="text-gray-600 text-xs md:text-sm">
-                Well-structured content with clear headings and logical flow for easy reference.
-              </p>
+        {/* Content Body */}
+        <div className="p-8 space-y-8">
+          {/* Highlight Banner */}
+          <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                <BookOpen className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-2">Premium Content Preview</h3>
+                <p className="text-blue-800 leading-relaxed">
+                  This preview showcases the structure and key highlights of <strong>{resource.title}</strong>. 
+                  The complete document contains comprehensive information, detailed guidelines, and practical examples 
+                  ready for immediate implementation.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 md:p-6 rounded-lg border border-gray-200">
-            <h3 className="text-base md:text-lg font-medium text-gray-800 mb-3">What You'll Learn</h3>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-xs md:text-sm">Essential concepts and terminology related to {resource.type}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-xs md:text-sm">Practical implementation strategies and techniques</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-xs md:text-sm">Common pitfalls and how to avoid them</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-xs md:text-sm">Advanced tips and optimization methods</span>
-              </li>
-            </ul>
+          {/* Feature Grid */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">What's Inside</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: "📋",
+                  title: "Comprehensive Coverage",
+                  description: "In-depth exploration of essential concepts with practical applications and real-world scenarios."
+                },
+                {
+                  icon: "🎯",
+                  title: "Actionable Guidelines",
+                  description: "Step-by-step instructions and best practices designed for immediate implementation."
+                },
+                {
+                  icon: "📊",
+                  title: "Professional Design",
+                  description: "Clean, modern formatting optimized for both digital viewing and high-quality printing."
+                },
+                {
+                  icon: "🔍",
+                  title: "Easy Navigation",
+                  description: "Well-structured content with clear headings, logical flow, and quick reference sections."
+                }
+              ].map((feature, index) => (
+                <div key={index} className="group p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                  <div className="flex items-start space-x-4">
+                    <div className="text-2xl flex-shrink-0">{feature.icon}</div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {feature.title}
+                      </h4>
+                      <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-4 md:mt-6 p-3 md:p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-amber-800 text-xs md:text-sm">
-              <strong>Note:</strong> This preview shows the structure and key highlights of the document. 
-              Download the complete <span className="font-mono bg-amber-100 px-1 rounded text-xs">{resource.filename}</span> file 
-              to access all content, detailed examples, and downloadable resources.
-            </p>
+          {/* Learning Outcomes */}
+          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-8 border border-emerald-200">
+            <h3 className="text-xl font-semibold text-emerald-900 mb-6 flex items-center">
+              <div className="p-2 bg-emerald-100 rounded-lg mr-3">
+                <Star className="w-5 h-5 text-emerald-600" />
+              </div>
+              Key Learning Outcomes
+            </h3>
+            <div className="space-y-4">
+              {[
+                "Master essential concepts and industry-standard terminology",
+                "Implement proven strategies and advanced techniques",
+                "Identify and avoid common pitfalls and security risks",
+                "Apply optimization methods for maximum effectiveness"
+              ].map((outcome, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center mt-0.5">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                  <p className="text-emerald-800 leading-relaxed">{outcome}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Download Notice */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-amber-100 rounded-lg flex-shrink-0">
+                <Download className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-amber-900">Complete Resource Available</h4>
+                <p className="text-amber-800 leading-relaxed">
+                  This preview highlights the document's structure and key features. Download the complete 
+                  <span className="font-mono bg-amber-100 px-2 py-1 rounded mx-1 text-sm">{resource.filename}</span>
+                  file to access all content, detailed examples, templates, and additional resources.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -408,23 +458,28 @@ const ResourcesTab = () => {
 
   return (
     <div className="space-y-8">
-      {/* Preview Dialog */}
+      {/* Enhanced Preview Dialog */}
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="w-[95vw] max-w-6xl h-[90vh] max-h-[90vh] p-0 overflow-hidden bg-gray-100">
-          <DialogHeader className="p-4 md:p-6 pb-0 flex-shrink-0">
-            <DialogTitle className="text-lg md:text-xl font-bold text-gray-800 flex items-center justify-between">
-              <span>Document Preview</span>
+        <DialogContent className="w-[98vw] max-w-7xl h-[95vh] max-h-[95vh] p-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-2xl">
+          <DialogHeader className="p-6 pb-0 flex-shrink-0 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+            <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Eye className="w-5 h-5 text-blue-600" />
+                </div>
+                <span>Document Preview</span>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsPreviewOpen(false)}
-                className="h-8 w-8 p-0 hover:bg-gray-200"
+                className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             </DialogTitle>
           </DialogHeader>
-          <div className="px-4 md:px-6 pb-4 md:pb-6 flex-1 overflow-hidden">
+          <div className="px-6 pb-6 flex-1 overflow-hidden">
             {previewResource && <PreviewContent resource={previewResource} />}
           </div>
         </DialogContent>
