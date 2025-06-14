@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Clock, MapPin, Users, Calendar, Award, BookOpen, Download, Target, Lightbulb, CheckCircle } from "lucide-react";
+import { Shield, Clock, MapPin, Users, Calendar, Award, BookOpen, Download, Target, Lightbulb, CheckCircle, MessageSquare } from "lucide-react";
 import CyberBackground from "@/components/CyberBackground";
 import ResourcesTab from "@/components/ResourcesTab";
+import FeedbackForm from "@/components/FeedbackForm";
 
 const Program = () => {
   const [inspirationalMessage, setInspirationalMessage] = useState("");
@@ -126,7 +127,7 @@ const Program = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="program" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800/80 backdrop-blur-sm border border-green-500/30">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800/80 backdrop-blur-sm border border-green-500/30">
             <TabsTrigger 
               value="program" 
               className="text-white data-[state=active]:bg-green-600 data-[state=active]:text-white"
@@ -140,6 +141,13 @@ const Program = () => {
             >
               <Download className="w-4 h-4 mr-2" />
               Resources
+            </TabsTrigger>
+            <TabsTrigger 
+              value="feedback" 
+              className="text-white data-[state=active]:bg-green-600 data-[state=active]:text-white"
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Feedback
             </TabsTrigger>
           </TabsList>
 
@@ -285,6 +293,24 @@ const Program = () => {
 
           <TabsContent value="resources" className="mt-6">
             <ResourcesTab />
+          </TabsContent>
+
+          <TabsContent value="feedback" className="mt-6">
+            <div className="mb-6">
+              <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
+                <CardContent className="p-6 text-center">
+                  <MessageSquare className="w-8 h-8 text-green-400 mx-auto mb-3" />
+                  <h2 className="text-xl font-bold text-white mb-2">
+                    Share Your Experience
+                  </h2>
+                  <p className="text-gray-300 text-sm">
+                    Your feedback is valuable in helping us improve our cybersecurity training programs. 
+                    Please take a moment to share your thoughts and experience from today's workshop.
+                  </p>
+                </CardContent>
+              </Card>
+              <FeedbackForm />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
