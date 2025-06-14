@@ -1,590 +1,252 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Download, FileText, Book, Folder, Link, Video, Globe, Star, BookOpen, Eye, X } from "lucide-react";
 
-interface Resource {
-  id: string;
-  title: string;
-  type: "cheatsheet" | "toolkit" | "slides" | "link" | "video" | "interactive";
-  description: string;
-  filename?: string;
-  url?: string;
-  rating?: number;
-  downloads?: number;
-}
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Filter, Grid, List, BookOpen, Shield, Code, Database } from "lucide-react";
+import ResourceCard from "./ResourceCard";
 
 const ResourcesTab = () => {
-  const [downloadCounts, setDownloadCounts] = useState<Record<string, number>>({});
-  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const resources: Resource[] = [
+  const resources = [
     {
-      id: "1",
-      title: "Top 10 Password Tips",
-      type: "cheatsheet",
-      description: "Essential password security guidelines and best practices for creating strong passwords",
-      filename: "password-tips-cheatsheet.pdf",
-      rating: 4.8,
-      downloads: 1250
+      title: "Cybersecurity Best Practices Guide",
+      description: "Comprehensive guide covering essential cybersecurity practices for individuals and organizations. Learn about password management, secure browsing, and threat prevention.",
+      type: "Security Guide",
+      downloadUrl: "#",
+      readTime: "15 min read",
+      downloads: 2847,
+      popularity: "high" as const,
+      previewContent: `
+        <h2>Introduction to Cybersecurity Best Practices</h2>
+        <p>In today's digital landscape, cybersecurity is more important than ever. This comprehensive guide will walk you through the essential practices that every individual and organization should implement to protect against cyber threats.</p>
+        
+        <h3>1. Password Security</h3>
+        <ul>
+          <li><strong>Use Strong, Unique Passwords:</strong> Create passwords that are at least 12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters.</li>
+          <li><strong>Enable Two-Factor Authentication:</strong> Add an extra layer of security to your accounts by enabling 2FA wherever possible.</li>
+          <li><strong>Use a Password Manager:</strong> Tools like LastPass, 1Password, or Bitwarden can help you generate and store strong, unique passwords.</li>
+        </ul>
+        
+        <h3>2. Safe Browsing Practices</h3>
+        <ul>
+          <li><strong>Verify Website URLs:</strong> Always check that you're on the correct website, especially when entering sensitive information.</li>
+          <li><strong>Look for HTTPS:</strong> Ensure websites use HTTPS encryption, indicated by a lock icon in your browser's address bar.</li>
+          <li><strong>Avoid Suspicious Links:</strong> Don't click on links in emails or messages from unknown sources.</li>
+        </ul>
+        
+        <h3>3. Software Updates and Patches</h3>
+        <p>Keep your operating system, applications, and security software up to date. Regular updates often include important security patches that protect against newly discovered vulnerabilities.</p>
+        
+        <h3>4. Data Backup and Recovery</h3>
+        <p>Implement a robust backup strategy following the 3-2-1 rule: keep 3 copies of important data, store them on 2 different types of media, and keep 1 copy offsite.</p>
+      `
     },
     {
-      id: "2",
-      title: "Phishing Detection Guide",
-      type: "cheatsheet",
-      description: "Comprehensive guide to identify and avoid phishing attacks with real examples",
-      filename: "phishing-detection-guide.pdf",
-      rating: 4.9,
-      downloads: 980
+      title: "Network Security Fundamentals",
+      description: "Deep dive into network security concepts, protocols, and implementation strategies. Perfect for IT professionals and security enthusiasts.",
+      type: "Technical Manual",
+      downloadUrl: "#",
+      readTime: "25 min read",
+      downloads: 1923,
+      popularity: "high" as const,
+      previewContent: `
+        <h2>Network Security Fundamentals</h2>
+        <p>Network security is the practice of securing a computer network from intruders, whether targeted attackers or opportunistic malware.</p>
+        
+        <h3>Key Network Security Components</h3>
+        <ul>
+          <li><strong>Firewalls:</strong> Act as a barrier between trusted internal networks and untrusted external networks</li>
+          <li><strong>Intrusion Detection Systems (IDS):</strong> Monitor network traffic for suspicious activity</li>
+          <li><strong>Virtual Private Networks (VPNs):</strong> Create secure connections over public networks</li>
+          <li><strong>Access Control:</strong> Manage who can access network resources</li>
+        </ul>
+        
+        <h3>Common Network Threats</h3>
+        <ul>
+          <li>Malware and viruses</li>
+          <li>Denial of Service (DoS) attacks</li>
+          <li>Man-in-the-middle attacks</li>
+          <li>SQL injection attacks</li>
+        </ul>
+      `
     },
     {
-      id: "3",
-      title: "Kali Linux Toolkit",
-      type: "toolkit",
-      description: "Complete guide to cybersecurity tools and penetration testing techniques",
-      filename: "kali-linux-toolkit.pdf",
-      rating: 4.7,
-      downloads: 750
-    },
-    {
-      id: "4",
-      title: "Cybersecurity Workshop Slides",
-      type: "slides",
-      description: "Complete presentation materials from today's training session",
-      filename: "cybersecurity-workshop-slides.pdf",
-      rating: 4.6,
-      downloads: 1500
-    },
-    {
-      id: "5",
-      title: "Social Engineering Defense",
-      type: "cheatsheet",
-      description: "Protect yourself from social engineering attacks and manipulation tactics",
-      filename: "social-engineering-defense.pdf",
-      rating: 4.8,
-      downloads: 890
-    },
-    {
-      id: "6",
-      title: "Network Security Toolkit",
-      type: "toolkit",
-      description: "Tools and techniques for network security assessment and monitoring",
-      filename: "network-security-toolkit.pdf",
-      rating: 4.5,
-      downloads: 650
-    },
-    {
-      id: "7",
-      title: "KNUST Cybersecurity Policies",
-      type: "slides",
-      description: "Official university cybersecurity policies and compliance guidelines",
-      filename: "knust-cybersecurity-policies.pdf",
-      rating: 4.4,
-      downloads: 1100
-    },
-    {
-      id: "8",
       title: "Incident Response Playbook",
-      type: "toolkit",
-      description: "Step-by-step guide for responding to cybersecurity incidents",
-      filename: "incident-response-playbook.pdf",
-      rating: 4.9,
-      downloads: 720
+      description: "Step-by-step guide for responding to cybersecurity incidents. Includes templates, checklists, and communication protocols.",
+      type: "Playbook",
+      downloadUrl: "#",
+      readTime: "20 min read",
+      downloads: 1456,
+      popularity: "medium" as const,
+      previewContent: `
+        <h2>Incident Response Playbook</h2>
+        <p>This playbook provides a structured approach to handling cybersecurity incidents, ensuring rapid response and minimizing damage.</p>
+        
+        <h3>Incident Response Phases</h3>
+        <ol>
+          <li><strong>Preparation:</strong> Develop and maintain an incident response capability</li>
+          <li><strong>Detection & Analysis:</strong> Determine whether an incident has occurred</li>
+          <li><strong>Containment:</strong> Limit the scope and magnitude of the incident</li>
+          <li><strong>Eradication:</strong> Remove the cause of the incident</li>
+          <li><strong>Recovery:</strong> Restore systems to normal operation</li>
+          <li><strong>Lessons Learned:</strong> Document and learn from the incident</li>
+        </ol>
+        
+        <h3>Key Stakeholders</h3>
+        <ul>
+          <li>Incident Response Team Leader</li>
+          <li>Security Analysts</li>
+          <li>IT Operations Team</li>
+          <li>Legal and Compliance</li>
+          <li>Communications Team</li>
+        </ul>
+      `
     },
     {
-      id: "9",
-      title: "NIST Cybersecurity Framework",
-      type: "link",
-      description: "Official NIST framework for improving critical infrastructure cybersecurity",
-      url: "https://www.nist.gov/cyberframework",
-      rating: 4.9,
-      downloads: 0
-    },
-    {
-      id: "10",
-      title: "Have I Been Pwned",
-      type: "link",
-      description: "Check if your email has been compromised in data breaches",
-      url: "https://haveibeenpwned.com",
-      rating: 4.8,
-      downloads: 0
-    },
-    {
-      id: "11",
-      title: "Password Strength Checker",
-      type: "interactive",
-      description: "Interactive tool to test and improve your password strength",
-      url: "https://www.security.org/how-secure-is-my-password/",
-      rating: 4.6,
-      downloads: 0
-    },
-    {
-      id: "12",
-      title: "Cybersecurity Awareness Video Series",
-      type: "video",
-      description: "Educational video series covering essential cybersecurity topics",
-      url: "https://www.youtube.com/playlist?list=PLBf0hzazHTGOh9SVcGwG3pOdEB9B26Nys",
-      rating: 4.7,
-      downloads: 0
+      title: "Privacy Protection Handbook",
+      description: "Essential guide to protecting personal and organizational privacy in the digital age. Covers GDPR compliance and data protection strategies.",
+      type: "Privacy Guide",
+      downloadUrl: "#",
+      readTime: "18 min read",
+      downloads: 987,
+      popularity: "medium" as const,
+      previewContent: `
+        <h2>Privacy Protection Handbook</h2>
+        <p>In an era of increasing digital surveillance and data collection, protecting privacy has become crucial for individuals and organizations alike.</p>
+        
+        <h3>Personal Privacy Protection</h3>
+        <ul>
+          <li><strong>Social Media Privacy:</strong> Review and adjust privacy settings on all social platforms</li>
+          <li><strong>Browser Privacy:</strong> Use private browsing modes and privacy-focused browsers</li>
+          <li><strong>Mobile Device Security:</strong> Secure your smartphones and tablets with strong authentication</li>
+        </ul>
+        
+        <h3>Organizational Privacy Compliance</h3>
+        <ul>
+          <li>GDPR compliance requirements</li>
+          <li>Data minimization principles</li>
+          <li>Privacy by design implementation</li>
+          <li>Data breach notification procedures</li>
+        </ul>
+      `
     }
   ];
 
-  const getIcon = (type: string) => {
-    switch (type) {
-      case "cheatsheet":
-        return <FileText className="w-5 h-5 text-green-400" />;
-      case "toolkit":
-        return <Folder className="w-5 h-5 text-blue-400" />;
-      case "slides":
-        return <Book className="w-5 h-5 text-purple-400" />;
-      case "link":
-        return <Link className="w-5 h-5 text-orange-400" />;
-      case "video":
-        return <Video className="w-5 h-5 text-red-400" />;
-      case "interactive":
-        return <Globe className="w-5 h-5 text-cyan-400" />;
-      default:
-        return <FileText className="w-5 h-5 text-gray-400" />;
-    }
-  };
+  const filteredResources = resources.filter(resource => {
+    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         resource.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterType === "all" || resource.type.toLowerCase().includes(filterType.toLowerCase());
+    return matchesSearch && matchesFilter;
+  });
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "cheatsheet":
-        return "bg-green-500/20 text-green-400 border-green-500/30";
-      case "toolkit":
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-      case "slides":
-        return "bg-purple-500/20 text-purple-400 border-purple-500/30";
-      case "link":
-        return "bg-orange-500/20 text-orange-400 border-orange-500/30";
-      case "video":
-        return "bg-red-500/20 text-red-400 border-red-500/30";
-      case "interactive":
-        return "bg-cyan-500/20 text-cyan-400 border-cyan-500/30";
-      default:
-        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
-    }
-  };
-
-  const getButtonColor = (type: string) => {
-    switch (type) {
-      case "cheatsheet":
-        return "bg-green-600 hover:bg-green-700";
-      case "toolkit":
-        return "bg-blue-600 hover:bg-blue-700";
-      case "slides":
-        return "bg-purple-600 hover:bg-purple-700";
-      case "link":
-        return "bg-orange-600 hover:bg-orange-700";
-      case "video":
-        return "bg-red-600 hover:bg-red-700";
-      case "interactive":
-        return "bg-cyan-600 hover:bg-cyan-700";
-      default:
-        return "bg-gray-600 hover:bg-gray-700";
-    }
-  };
-
-  const handleDownload = (resource: Resource) => {
-    if (resource.url) {
-      window.open(resource.url, '_blank');
-    } else if (resource.filename) {
-      // Simulate download
-      console.log(`Downloading ${resource.filename}`);
-      
-      const content = `${resource.title}\n\nThis is a placeholder for the actual PDF resource.\nIn a real implementation, this would be the actual PDF content.\n\nDescription: ${resource.description}`;
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = resource.filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-      // Update download count
-      setDownloadCounts(prev => ({
-        ...prev,
-        [resource.id]: (prev[resource.id] || 0) + 1
-      }));
-    }
-  };
-
-  const handleView = (resource: Resource) => {
-    if (resource.url) {
-      window.open(resource.url, '_blank');
-    } else if (resource.filename) {
-      setPreviewResource(resource);
-      setIsPreviewOpen(true);
-    }
-  };
-
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`w-3 h-3 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-400'}`} 
-      />
-    ));
-  };
-
-  const PreviewContent = ({ resource }: { resource: Resource }) => (
-    <div className="h-full overflow-y-auto">
-      {/* Elegant Header Section */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-2xl mb-8 shadow-2xl border border-slate-700/50 backdrop-blur-sm">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl"></div>
-        <div className="relative">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                {getIcon(resource.type)}
-              </div>
-              <span className={`px-4 py-2 rounded-full text-sm font-medium border backdrop-blur-sm ${getTypeColor(resource.type)}`}>
-                {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
-              </span>
-            </div>
-            <div className="flex items-center space-x-4 text-slate-300">
-              <div className="flex items-center space-x-1">
-                {renderStars(resource.rating || 0)}
-                <span className="text-sm font-medium ml-2">({resource.rating})</span>
-              </div>
-              <div className="h-4 w-px bg-slate-600"></div>
-              <span className="text-sm">
-                {resource.downloads ? `${resource.downloads + (downloadCounts[resource.id] || 0)} downloads` : 'External Resource'}
-              </span>
-            </div>
-          </div>
-          
-          <h1 className="text-3xl font-bold text-white mb-4 leading-tight">{resource.title}</h1>
-          <p className="text-slate-300 text-lg leading-relaxed max-w-4xl">{resource.description}</p>
-        </div>
-      </div>
-
-      {/* Elegant Content Preview */}
-      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-        {/* Content Header */}
-        <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-8 py-6 border-b border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FileText className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">Document Preview</h2>
-              <p className="text-gray-600 text-sm">Comprehensive {resource.type} resource</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Content Body */}
-        <div className="p-8 space-y-8">
-          {/* Highlight Banner */}
-          <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
-            <div className="flex items-start space-x-4">
-              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                <BookOpen className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-900 mb-2">Premium Content Preview</h3>
-                <p className="text-blue-800 leading-relaxed">
-                  This preview showcases the structure and key highlights of <strong>{resource.title}</strong>. 
-                  The complete document contains comprehensive information, detailed guidelines, and practical examples 
-                  ready for immediate implementation.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Feature Grid */}
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">What's Inside</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {[
-                {
-                  icon: "📋",
-                  title: "Comprehensive Coverage",
-                  description: "In-depth exploration of essential concepts with practical applications and real-world scenarios."
-                },
-                {
-                  icon: "🎯",
-                  title: "Actionable Guidelines",
-                  description: "Step-by-step instructions and best practices designed for immediate implementation."
-                },
-                {
-                  icon: "📊",
-                  title: "Professional Design",
-                  description: "Clean, modern formatting optimized for both digital viewing and high-quality printing."
-                },
-                {
-                  icon: "🔍",
-                  title: "Easy Navigation",
-                  description: "Well-structured content with clear headings, logical flow, and quick reference sections."
-                }
-              ].map((feature, index) => (
-                <div key={index} className="group p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                  <div className="flex items-start space-x-4">
-                    <div className="text-2xl flex-shrink-0">{feature.icon}</div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                        {feature.title}
-                      </h4>
-                      <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Learning Outcomes */}
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-8 border border-emerald-200">
-            <h3 className="text-xl font-semibold text-emerald-900 mb-6 flex items-center">
-              <div className="p-2 bg-emerald-100 rounded-lg mr-3">
-                <Star className="w-5 h-5 text-emerald-600" />
-              </div>
-              Key Learning Outcomes
-            </h3>
-            <div className="space-y-4">
-              {[
-                "Master essential concepts and industry-standard terminology",
-                "Implement proven strategies and advanced techniques",
-                "Identify and avoid common pitfalls and security risks",
-                "Apply optimization methods for maximum effectiveness"
-              ].map((outcome, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center mt-0.5">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <p className="text-emerald-800 leading-relaxed">{outcome}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Download Notice */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
-            <div className="flex items-start space-x-4">
-              <div className="p-2 bg-amber-100 rounded-lg flex-shrink-0">
-                <Download className="w-5 h-5 text-amber-600" />
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-amber-900">Complete Resource Available</h4>
-                <p className="text-amber-800 leading-relaxed">
-                  This preview highlights the document's structure and key features. Download the complete 
-                  <span className="font-mono bg-amber-100 px-2 py-1 rounded mx-1 text-sm">{resource.filename}</span>
-                  file to access all content, detailed examples, templates, and additional resources.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const resourcesByType = {
-    cheatsheet: resources.filter(r => r.type === "cheatsheet"),
-    toolkit: resources.filter(r => r.type === "toolkit"),
-    slides: resources.filter(r => r.type === "slides"),
-    link: resources.filter(r => r.type === "link"),
-    video: resources.filter(r => r.type === "video"),
-    interactive: resources.filter(r => r.type === "interactive")
-  };
-
-  const ResourceCard = ({ resource }: { resource: Resource }) => (
-    <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 hover:border-green-400/50 transition-all duration-200">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm text-white flex items-center justify-between">
-          <div className="flex items-center">
-            {getIcon(resource.type)}
-            <span className="ml-2">{resource.title}</span>
-          </div>
-          <span className={`px-2 py-1 rounded text-xs border ${getTypeColor(resource.type)}`}>
-            {resource.type}
-          </span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <p className="text-gray-400 text-sm mb-3">{resource.description}</p>
-        
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-1">
-            {renderStars(resource.rating || 0)}
-            <span className="text-gray-400 text-xs ml-1">({resource.rating})</span>
-          </div>
-          <span className="text-gray-500 text-xs">
-            {resource.downloads ? `${resource.downloads + (downloadCounts[resource.id] || 0)} downloads` : 'External'}
-          </span>
-        </div>
-
-        <div className="flex gap-2">
-          {(resource.filename || resource.url) && (
-            <Button 
-              onClick={() => handleView(resource)}
-              size="sm" 
-              variant="outline"
-              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              View
-            </Button>
-          )}
-          
-          <Button 
-            onClick={() => handleDownload(resource)}
-            size="sm" 
-            className={`flex-1 text-white ${getButtonColor(resource.type)}`}
-          >
-            {resource.type === 'link' || resource.type === 'video' || resource.type === 'interactive' ? (
-              <>
-                <Link className="w-4 h-4 mr-2" />
-                Open Link
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2" />
-                Download PDF
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  const filterOptions = [
+    { value: "all", label: "All Resources", icon: BookOpen },
+    { value: "security", label: "Security Guides", icon: Shield },
+    { value: "technical", label: "Technical Manuals", icon: Code },
+    { value: "playbook", label: "Playbooks", icon: Database },
+  ];
 
   return (
-    <div className="space-y-8">
-      {/* Enhanced Preview Dialog */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="w-[98vw] max-w-7xl h-[95vh] max-h-[95vh] p-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-2xl">
-          <DialogHeader className="p-6 pb-0 flex-shrink-0 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-            <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Eye className="w-5 h-5 text-blue-600" />
-                </div>
-                <span>Document Preview</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsPreviewOpen(false)}
-                className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="px-6 pb-6 flex-1 overflow-hidden">
-            {previewResource && <PreviewContent resource={previewResource} />}
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-gray-800/60 to-gray-700/60 backdrop-blur-xl rounded-2xl p-6 border border-green-500/20">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+              Cybersecurity Resources
+            </h2>
+            <p className="text-gray-300 text-base lg:text-lg">
+              Access comprehensive guides, tools, and materials to enhance your cybersecurity knowledge
+            </p>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-white mb-2">Training Resources</h2>
-        <p className="text-gray-400">Download cheatsheets, toolkits, access online tools, and explore additional learning materials</p>
-      </div>
-
-      {/* Cheatsheets Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-green-400 mb-4 flex items-center">
-          <FileText className="w-5 h-5 mr-2" />
-          Quick Reference Cheatsheets
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.cheatsheet.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className={viewMode === 'grid' 
+                ? "bg-green-600 text-white" 
+                : "bg-gray-700/50 border-green-500/30 text-green-400 hover:bg-gray-600"
+              }
+            >
+              <Grid className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className={viewMode === 'list' 
+                ? "bg-green-600 text-white" 
+                : "bg-gray-700/50 border-green-500/30 text-green-400 hover:bg-gray-600"
+              }
+            >
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Toolkits Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-blue-400 mb-4 flex items-center">
-          <Folder className="w-5 h-5 mr-2" />
-          Comprehensive Toolkits
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.toolkit.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
+      {/* Search and Filter Section */}
+      <div className="bg-gray-800/40 backdrop-blur-xl rounded-xl p-4 border border-green-500/10">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search resources..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/30"
+            />
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {filterOptions.map((option) => {
+              const IconComponent = option.icon;
+              return (
+                <Button
+                  key={option.value}
+                  variant={filterType === option.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilterType(option.value)}
+                  className={filterType === option.value
+                    ? "bg-green-600 text-white shadow-lg"
+                    : "bg-gray-700/50 border-green-500/30 text-green-400 hover:bg-gray-600 hover:border-green-400"
+                  }
+                >
+                  <IconComponent className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">{option.label}</span>
+                  <span className="sm:hidden">{option.label.split(' ')[0]}</span>
+                </Button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Workshop Materials Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-purple-400 mb-4 flex items-center">
-          <Book className="w-5 h-5 mr-2" />
-          Workshop Materials & Policies
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.slides.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
-        </div>
+      {/* Resources Grid */}
+      <div className={`grid gap-6 ${
+        viewMode === 'grid' 
+          ? 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3' 
+          : 'grid-cols-1'
+      }`}>
+        {filteredResources.map((resource, index) => (
+          <ResourceCard key={index} resource={resource} />
+        ))}
       </div>
 
-      {/* Online Resources Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-orange-400 mb-4 flex items-center">
-          <Link className="w-5 h-5 mr-2" />
-          Essential Online Resources
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.link.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
+      {filteredResources.length === 0 && (
+        <div className="text-center py-12">
+          <div className="bg-gray-800/40 backdrop-blur-xl rounded-xl p-8 border border-green-500/10">
+            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-400 text-lg">No resources found matching your criteria.</p>
+            <p className="text-gray-500 text-sm mt-2">Try adjusting your search terms or filters.</p>
+          </div>
         </div>
-      </div>
-
-      {/* Interactive Tools Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-cyan-400 mb-4 flex items-center">
-          <Globe className="w-5 h-5 mr-2" />
-          Interactive Security Tools
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.interactive.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
-        </div>
-      </div>
-
-      {/* Video Content Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-red-400 mb-4 flex items-center">
-          <Video className="w-5 h-5 mr-2" />
-          Educational Videos
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resourcesByType.video.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
-        </div>
-      </div>
-
-      {/* Additional Resources Info */}
-      <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border-blue-400/50">
-        <CardContent className="p-6 text-center">
-          <BookOpen className="w-8 h-8 text-blue-400 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-white mb-2">Need More Resources?</h3>
-          <p className="text-gray-300 mb-4">
-            Looking for specific cybersecurity resources or have questions about any of these materials? 
-            Contact the KNUST UITS team for additional support and personalized recommendations.
-          </p>
-          <Button 
-            onClick={() => window.open('mailto:uits@knust.edu.gh', '_blank')}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Contact UITS Team
-          </Button>
-        </CardContent>
-      </Card>
+      )}
     </div>
   );
 };
