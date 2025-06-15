@@ -38,31 +38,46 @@ export type Database = {
       }
       feedback: {
         Row: {
+          additional_comments: string | null
           created_at: string | null
           email: string | null
           id: string
+          improvements: string | null
           message: string | null
-          name: string
+          most_valuable: string | null
+          name: string | null
+          overall_satisfaction: string | null
           rating: number | null
           user_id: string | null
+          would_recommend: string | null
         }
         Insert: {
+          additional_comments?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
+          improvements?: string | null
           message?: string | null
-          name: string
+          most_valuable?: string | null
+          name?: string | null
+          overall_satisfaction?: string | null
           rating?: number | null
           user_id?: string | null
+          would_recommend?: string | null
         }
         Update: {
+          additional_comments?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
+          improvements?: string | null
           message?: string | null
-          name?: string
+          most_valuable?: string | null
+          name?: string | null
+          overall_satisfaction?: string | null
           rating?: number | null
           user_id?: string | null
+          would_recommend?: string | null
         }
         Relationships: []
       }

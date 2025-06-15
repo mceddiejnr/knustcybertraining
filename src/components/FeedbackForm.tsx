@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Star, MessageSquare, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
   const [rating, setRating] = useState(0);
@@ -18,8 +21,9 @@ const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
   const [wouldRecommend, setWouldRecommend] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (rating === 0) {
@@ -31,20 +35,37 @@ const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
       return;
     }
 
-    // Save feedback to localStorage (in a real app, this would go to a backend)
-    const feedback = {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to submit feedback.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Save feedback to Supabase
+    const feedbackData = {
+      user_id: user.id,
       rating,
-      overallSatisfaction,
-      mostValuable,
+      overall_satisfaction: overallSatisfaction,
+      most_valuable: mostValuable,
       improvements,
-      additionalComments,
-      wouldRecommend,
-      timestamp: new Date().toISOString(),
+      additional_comments: additionalComments,
+      would_recommend: wouldRecommend,
     };
 
-    const existingFeedback = JSON.parse(localStorage.getItem("workshopFeedback") || "[]");
-    existingFeedback.push(feedback);
-    localStorage.setItem("workshopFeedback", JSON.stringify(existingFeedback));
+    const { error } = await supabase.from("feedback").insert([feedbackData]);
+
+    if (error) {
+      console.error("Error submitting feedback:", error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your feedback. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSubmitted(true);
     toast({

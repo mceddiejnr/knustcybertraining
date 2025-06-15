@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,15 +12,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FeedbackData {
+  id: string;
   rating: number;
-  overallSatisfaction: string;
-  mostValuable: string;
+  overall_satisfaction: string;
+  most_valuable: string;
   improvements: string;
-  additionalComments: string;
-  wouldRecommend: string;
-  timestamp: string;
+  additional_comments: string;
+  would_recommend: string;
+  created_at: string;
 }
 
 const AdminFeedback = () => {
@@ -32,17 +33,44 @@ const AdminFeedback = () => {
   const [selectedFeedback, setSelectedFeedback] = useState<FeedbackData | null>(null);
 
   useEffect(() => {
-    const loadFeedback = () => {
-      const savedFeedback = JSON.parse(localStorage.getItem("workshopFeedback") || "[]");
-      setFeedback(savedFeedback);
-      setFilteredFeedback(savedFeedback);
+    const fetchFeedback = async () => {
+      const { data, error } = await supabase
+        .from('feedback')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching feedback:', error);
+      } else if (data) {
+        // Map null values to empty strings for easier handling in the component
+        const formattedData = data.map(item => ({
+          ...item,
+          overall_satisfaction: item.overall_satisfaction ?? '',
+          most_valuable: item.most_valuable ?? '',
+          improvements: item.improvements ?? '',
+          additional_comments: item.additional_comments ?? '',
+          would_recommend: item.would_recommend ?? '',
+        }));
+        setFeedback(formattedData);
+      }
     };
 
-    loadFeedback();
-    
-    // Listen for new feedback submissions
-    const interval = setInterval(loadFeedback, 2000);
-    return () => clearInterval(interval);
+    fetchFeedback();
+
+    const channel = supabase
+      .channel('feedback-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'feedback' },
+        () => {
+          fetchFeedback(); // Re-fetch all on any change for simplicity
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -53,7 +81,7 @@ const AdminFeedback = () => {
     }
 
     if (filterSatisfaction !== "all") {
-      filtered = filtered.filter(f => f.overallSatisfaction === filterSatisfaction);
+      filtered = filtered.filter(f => f.overall_satisfaction === filterSatisfaction);
     }
 
     setFilteredFeedback(filtered);
@@ -67,14 +95,16 @@ const AdminFeedback = () => {
 
   const getSatisfactionStats = () => {
     const stats = feedback.reduce((acc, f) => {
-      acc[f.overallSatisfaction] = (acc[f.overallSatisfaction] || 0) + 1;
+      if (f.overall_satisfaction) {
+        acc[f.overall_satisfaction] = (acc[f.overall_satisfaction] || 0) + 1;
+      }
       return acc;
     }, {} as Record<string, number>);
     return stats;
   };
 
   const getRecommendationStats = () => {
-    const positive = feedback.filter(f => f.wouldRecommend === "Definitely" || f.wouldRecommend === "Probably").length;
+    const positive = feedback.filter(f => f.would_recommend === "Definitely" || f.would_recommend === "Probably").length;
     return feedback.length > 0 ? Math.round((positive / feedback.length) * 100) : 0;
   };
 
@@ -148,7 +178,7 @@ const AdminFeedback = () => {
               <div>
                 <p className="text-sm text-gray-400">Latest Submission</p>
                 <p className="text-sm font-bold text-green-400">
-                  {feedback.length > 0 ? formatDate(feedback[feedback.length - 1].timestamp).split(',')[0] : 'N/A'}
+                  {feedback.length > 0 ? formatDate(feedback[0].created_at).split(',')[0] : 'N/A'}
                 </p>
               </div>
               <Calendar className="w-8 h-8 text-green-400" />
@@ -235,13 +265,13 @@ const AdminFeedback = () => {
                         ))}
                         <span className="text-sm text-gray-400 ml-2">({item.rating}/5)</span>
                       </div>
-                      <Badge className={`${getSatisfactionColor(item.overallSatisfaction)} text-white`}>
-                        {item.overallSatisfaction}
+                      <Badge className={`${getSatisfactionColor(item.overall_satisfaction)} text-white`}>
+                        {item.overall_satisfaction}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                         <span className="text-xs text-gray-400">
-                          {formatDate(item.timestamp)}
+                          {formatDate(item.created_at)}
                         </span>
                         <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white h-8 w-8" onClick={() => setSelectedFeedback(item)}>
                             <View />
@@ -251,10 +281,10 @@ const AdminFeedback = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    {item.mostValuable && (
+                    {item.most_valuable && (
                       <div>
                         <p className="text-green-400 font-medium mb-1">Most Valuable:</p>
-                        <p className="text-gray-300 truncate">{item.mostValuable}</p>
+                        <p className="text-gray-300 truncate">{item.most_valuable}</p>
                       </div>
                     )}
                     
@@ -265,17 +295,17 @@ const AdminFeedback = () => {
                       </div>
                     )}
                     
-                    {item.wouldRecommend && (
+                    {item.would_recommend && (
                       <div>
                         <p className="text-blue-400 font-medium mb-1">Would Recommend:</p>
-                        <p className="text-gray-300">{item.wouldRecommend}</p>
+                        <p className="text-gray-300">{item.would_recommend}</p>
                       </div>
                     )}
                     
-                    {item.additionalComments && (
+                    {item.additional_comments && (
                       <div className="md:col-span-2">
                         <p className="text-purple-400 font-medium mb-1">Additional Comments:</p>
-                        <p className="text-gray-300 truncate">{item.additionalComments}</p>
+                        <p className="text-gray-300 truncate">{item.additional_comments}</p>
                       </div>
                     )}
                   </div>
@@ -291,7 +321,7 @@ const AdminFeedback = () => {
         <DialogContent className="bg-gray-900/90 backdrop-blur-sm border-green-500/30 text-white max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><MessageSquare className="text-green-400" /> Feedback Details</DialogTitle>
-            {selectedFeedback && <DialogDescription className="text-gray-400 pt-1">Submitted on {formatDate(selectedFeedback.timestamp)}</DialogDescription>}
+            {selectedFeedback && <DialogDescription className="text-gray-400 pt-1">Submitted on {formatDate(selectedFeedback.created_at)}</DialogDescription>}
           </DialogHeader>
           {selectedFeedback && (
             <div className="space-y-4 py-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
@@ -311,16 +341,16 @@ const AdminFeedback = () => {
               </div>
               <div className="flex items-start gap-3">
                 <p className="font-semibold text-gray-400 w-32 shrink-0">Satisfaction:</p>
-                <p className="text-gray-300">{selectedFeedback.overallSatisfaction}</p>
+                <p className="text-gray-300">{selectedFeedback.overall_satisfaction}</p>
               </div>
               <div className="flex items-start gap-3">
                 <p className="font-semibold text-gray-400 w-32 shrink-0">Would Recommend:</p>
-                <p className="text-gray-300">{selectedFeedback.wouldRecommend}</p>
+                <p className="text-gray-300">{selectedFeedback.would_recommend}</p>
               </div>
-              {selectedFeedback.mostValuable && (
+              {selectedFeedback.most_valuable && (
                 <div className="flex items-start gap-3">
                   <p className="font-semibold text-gray-400 w-32 shrink-0">Most Valuable:</p>
-                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.mostValuable}</p>
+                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.most_valuable}</p>
                 </div>
               )}
               {selectedFeedback.improvements && (
@@ -329,10 +359,10 @@ const AdminFeedback = () => {
                   <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.improvements}</p>
                 </div>
               )}
-              {selectedFeedback.additionalComments && (
+              {selectedFeedback.additional_comments && (
                 <div className="flex items-start gap-3">
                   <p className="font-semibold text-gray-400 w-32 shrink-0">Additional Comments:</p>
-                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.additionalComments}</p>
+                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.additional_comments}</p>
                 </div>
               )}
             </div>
