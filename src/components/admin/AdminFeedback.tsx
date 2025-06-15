@@ -1,9 +1,17 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, MessageSquare, Calendar, TrendingUp, Filter } from "lucide-react";
+import { Star, MessageSquare, Calendar, TrendingUp, Filter, View } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface FeedbackData {
   rating: number;
@@ -20,6 +28,7 @@ const AdminFeedback = () => {
   const [filteredFeedback, setFilteredFeedback] = useState<FeedbackData[]>([]);
   const [filterRating, setFilterRating] = useState<string>("all");
   const [filterSatisfaction, setFilterSatisfaction] = useState<string>("all");
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackData | null>(null);
 
   useEffect(() => {
     const loadFeedback = () => {
@@ -213,7 +222,7 @@ const AdminFeedback = () => {
               {filteredFeedback.map((item, index) => (
                 <div key={index} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                       <div className="flex items-center space-x-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
@@ -229,23 +238,29 @@ const AdminFeedback = () => {
                         {item.overallSatisfaction}
                       </Badge>
                     </div>
-                    <span className="text-xs text-gray-400">
-                      {formatDate(item.timestamp)}
-                    </span>
+                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                        <span className="text-xs text-gray-400">
+                          {formatDate(item.timestamp)}
+                        </span>
+                        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white h-6 w-6" onClick={() => setSelectedFeedback(item)}>
+                            <View className="h-4 w-4" />
+                            <span className="sr-only">View Feedback</span>
+                        </Button>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     {item.mostValuable && (
                       <div>
                         <p className="text-green-400 font-medium mb-1">Most Valuable:</p>
-                        <p className="text-gray-300">{item.mostValuable}</p>
+                        <p className="text-gray-300 truncate">{item.mostValuable}</p>
                       </div>
                     )}
                     
                     {item.improvements && (
                       <div>
                         <p className="text-orange-400 font-medium mb-1">Improvements:</p>
-                        <p className="text-gray-300">{item.improvements}</p>
+                        <p className="text-gray-300 truncate">{item.improvements}</p>
                       </div>
                     )}
                     
@@ -259,7 +274,7 @@ const AdminFeedback = () => {
                     {item.additionalComments && (
                       <div className="md:col-span-2">
                         <p className="text-purple-400 font-medium mb-1">Additional Comments:</p>
-                        <p className="text-gray-300">{item.additionalComments}</p>
+                        <p className="text-gray-300 truncate">{item.additionalComments}</p>
                       </div>
                     )}
                   </div>
@@ -269,6 +284,63 @@ const AdminFeedback = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Feedback Detail Dialog */}
+      <Dialog open={!!selectedFeedback} onOpenChange={(isOpen) => { if (!isOpen) setSelectedFeedback(null); }}>
+        <DialogContent className="bg-gray-900/90 backdrop-blur-sm border-green-500/30 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><MessageSquare className="text-green-400" /> Feedback Details</DialogTitle>
+            {selectedFeedback && <DialogDescription className="text-gray-400 pt-1">Submitted on {formatDate(selectedFeedback.timestamp)}</DialogDescription>}
+          </DialogHeader>
+          {selectedFeedback && (
+            <div className="space-y-4 py-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
+              <div className="flex items-center gap-3">
+                <p className="font-semibold text-gray-400 w-32 shrink-0">Rating:</p>
+                <div className="flex items-center">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-5 h-5 ${
+                        star <= selectedFeedback.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'
+                      }`}
+                    />
+                  ))}
+                  <span className="ml-2 text-gray-300">({selectedFeedback.rating}/5)</span>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <p className="font-semibold text-gray-400 w-32 shrink-0">Satisfaction:</p>
+                <p className="text-gray-300">{selectedFeedback.overallSatisfaction}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <p className="font-semibold text-gray-400 w-32 shrink-0">Would Recommend:</p>
+                <p className="text-gray-300">{selectedFeedback.wouldRecommend}</p>
+              </div>
+              {selectedFeedback.mostValuable && (
+                <div className="flex items-start gap-3">
+                  <p className="font-semibold text-gray-400 w-32 shrink-0">Most Valuable:</p>
+                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.mostValuable}</p>
+                </div>
+              )}
+              {selectedFeedback.improvements && (
+                <div className="flex items-start gap-3">
+                  <p className="font-semibold text-gray-400 w-32 shrink-0">Improvements:</p>
+                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.improvements}</p>
+                </div>
+              )}
+              {selectedFeedback.additionalComments && (
+                <div className="flex items-start gap-3">
+                  <p className="font-semibold text-gray-400 w-32 shrink-0">Additional Comments:</p>
+                  <p className="text-gray-300 bg-gray-800/50 p-2 rounded-md flex-1">{selectedFeedback.additionalComments}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="sm:justify-start">
+              <Button className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white" onClick={() => setSelectedFeedback(null)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
