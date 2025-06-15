@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -11,20 +12,30 @@ interface AuthGuardProps {
 const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading) {
+      console.log("AuthGuard check:", { user: !!user, profile, requireAdmin });
+      
       if (!user) {
+        console.log("No user, redirecting to auth");
         navigate("/auth");
         return;
       }
       
       if (requireAdmin && profile?.role !== 'admin') {
+        console.log("User role:", profile?.role, "- Access denied to admin area");
+        toast({
+          title: "Access Denied",
+          description: "You need admin privileges to access this area.",
+          variant: "destructive",
+        });
         navigate("/");
         return;
       }
     }
-  }, [user, profile, loading, navigate, requireAdmin]);
+  }, [user, profile, loading, navigate, requireAdmin, toast]);
 
   if (loading) {
     return (

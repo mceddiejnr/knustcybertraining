@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import SuccessMessage from "@/components/SuccessMessage";
 import AccessCodeForm from "@/components/AccessCodeForm";
 import AccessCodeDisplay from "@/components/AccessCodeDisplay";
 import CyberBackground from "@/components/CyberBackground";
+import RoleUpdater from "@/components/RoleUpdater";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut, Settings, Shield } from "lucide-react";
 
@@ -142,6 +142,14 @@ const Index = () => {
             <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Admin
           </Button>
+        </div>
+      )}
+
+      {/* Role Updater for logged in users who aren't admin */}
+      {user && profile?.role !== 'admin' && (
+        <div className="absolute top-20 right-4 z-30 bg-gray-800/90 backdrop-blur-sm border border-green-500/30 rounded-lg p-4">
+          <div className="text-white text-sm mb-2">Need admin access?</div>
+          <RoleUpdater />
         </div>
       )}
       
