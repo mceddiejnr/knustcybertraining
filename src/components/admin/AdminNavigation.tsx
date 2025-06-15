@@ -20,7 +20,6 @@ const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationPro
     { id: "overview", label: "Overview", icon: Settings },
     { id: "attendance", label: "Attendance", icon: Users },
     { id: "feedback", label: "Feedback", icon: Star },
-    { id: "access-codes", label: "Access Codes", icon: KeyRound },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "program", label: "Program", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: TrendingUp },
@@ -29,6 +28,7 @@ const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationPro
   const userManagementItems = [
     { id: "user-roles", label: "Manage Roles", icon: UserCog },
     { id: "user-approvals", label: "User Approval", icon: Clock },
+    { id: "access-codes", label: "Access Codes", icon: KeyRound },
   ];
 
   const isUserManagementSection = userManagementItems.some(item => item.id === currentSection);
@@ -63,8 +63,8 @@ const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationPro
             size="sm"
           >
             <UserCog className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">User Roles</span>
-            <span className="sm:hidden">Roles</span>
+            <span className="hidden sm:inline">User Management</span>
+            <span className="sm:hidden">Users</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-gray-900 border-green-500/50 text-green-300">
