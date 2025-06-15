@@ -90,6 +90,51 @@ export type Database = {
         }
         Relationships: []
       }
+      resources: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          downloads: number | null
+          file_path: string | null
+          id: string
+          is_downloadable: boolean
+          popularity: string | null
+          preview_content: string | null
+          read_time: string | null
+          title: string
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          downloads?: number | null
+          file_path?: string | null
+          id?: string
+          is_downloadable?: boolean
+          popularity?: string | null
+          preview_content?: string | null
+          read_time?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          downloads?: number | null
+          file_path?: string | null
+          id?: string
+          is_downloadable?: boolean
+          popularity?: string | null
+          preview_content?: string | null
+          read_time?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -131,7 +176,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

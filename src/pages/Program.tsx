@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Download, MessageSquare } from "lucide-react";
 import CyberBackground from "@/components/CyberBackground";
-import ResourcesTab from "@/components/ResourcesTab";
+import ProgramResources from "@/components/ProgramResources";
 import FeedbackForm from "@/components/FeedbackForm";
 import ProgramHeader from "@/components/ProgramHeader";
 import LearningObjectives from "@/components/LearningObjectives";
@@ -85,7 +85,7 @@ const Program = () => {
           </TabsContent>
 
           <TabsContent value="resources" className="mt-6">
-            <ResourcesTab />
+            <ProgramResources />
           </TabsContent>
 
           <TabsContent value="feedback" className="mt-6">

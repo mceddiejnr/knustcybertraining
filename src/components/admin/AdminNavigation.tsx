@@ -6,9 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, Settings, Users, MessageSquare, TrendingUp, KeyRound, UserCog, Star, Clock } from "lucide-react";
+import { Calendar, Settings, Users, MessageSquare, TrendingUp, KeyRound, UserCog, Star, Clock, Download } from "lucide-react";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources";
 
 interface AdminNavigationProps {
   currentSection: AdminSection;
@@ -23,6 +23,7 @@ const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationPro
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "program", label: "Program", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: TrendingUp },
+    { id: "resources", label: "Resources", icon: Download },
   ];
 
   const userManagementItems = [
