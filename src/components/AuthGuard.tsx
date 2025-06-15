@@ -24,7 +24,8 @@ const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {
         return;
       }
       
-      if (requireAdmin && profile?.role !== 'admin') {
+      // Only check admin role if profile is loaded and we require admin access
+      if (requireAdmin && profile && profile.role !== 'admin') {
         console.log("User role:", profile?.role, "- Access denied to admin area");
         toast({
           title: "Access Denied",
@@ -45,7 +46,8 @@ const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {
     );
   }
 
-  if (!user || (requireAdmin && profile?.role !== 'admin')) {
+  // If we require admin access, wait for profile to load before allowing access
+  if (!user || (requireAdmin && (!profile || profile.role !== 'admin'))) {
     return null;
   }
 
