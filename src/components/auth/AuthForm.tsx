@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -66,7 +65,8 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             title: "Welcome back!",
             description: "Successfully signed in",
           });
-          navigate("/");
+          // Redirect to admin dashboard after successful login
+          navigate("/admin");
         }
       }
     } finally {

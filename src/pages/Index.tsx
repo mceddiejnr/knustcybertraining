@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
@@ -17,8 +16,15 @@ const Index = () => {
   const [currentState, setCurrentState] = useState<AppState>("welcome");
   const [attendeeName, setAttendeeName] = useState("");
   const [userAccessCode, setUserAccessCode] = useState("");
-  const { user, profile, signOut, isAdmin } = useAuth();
+  const { user, profile, signOut, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect admin users to admin dashboard when they're authenticated
+  useEffect(() => {
+    if (!loading && user && isAdmin) {
+      navigate("/admin");
+    }
+  }, [user, isAdmin, loading, navigate]);
 
   const handleQRCodeScan = () => {
     setCurrentState("form");
