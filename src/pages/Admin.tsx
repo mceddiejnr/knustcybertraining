@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import AttendancePanel from "@/components/admin/AttendancePanel";
 import InspirationalMessageManager from "@/components/admin/InspirationalMessageManager";
@@ -10,7 +11,8 @@ import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import CyberBackground from "@/components/CyberBackground";
-import AdminProtection from "@/components/AdminProtection";
+import AuthGuard from "@/components/AuthGuard";
+import { useAuth } from "@/hooks/useAuth";
 
 type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback";
 
@@ -24,6 +26,7 @@ const AdminContent = () => {
   const [currentSection, setCurrentSection] = useState<AdminSection>("overview");
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [qrScans, setQrScans] = useState(0);
+  const { signOut } = useAuth();
 
   const loadAttendees = () => {
     const savedAttendees = JSON.parse(localStorage.getItem("attendees") || "[]");
@@ -54,8 +57,7 @@ const AdminContent = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminAuthenticated");
-    window.location.href = "/admin/login";
+    signOut();
   };
 
   const renderContent = () => {
@@ -97,9 +99,9 @@ const AdminContent = () => {
 
 const Admin = () => {
   return (
-    <AdminProtection>
+    <AuthGuard requireAdmin={true}>
       <AdminContent />
-    </AdminProtection>
+    </AuthGuard>
   );
 };
 

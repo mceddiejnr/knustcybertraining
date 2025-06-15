@@ -1,11 +1,15 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import WelcomeMessage from "@/components/WelcomeMessage";
 import SuccessMessage from "@/components/SuccessMessage";
 import AccessCodeForm from "@/components/AccessCodeForm";
 import AccessCodeDisplay from "@/components/AccessCodeDisplay";
 import CyberBackground from "@/components/CyberBackground";
+import { useAuth } from "@/hooks/useAuth";
+import { LogOut, Settings } from "lucide-react";
 
 export type AppState = "welcome" | "form" | "accessCode" | "codeDisplay" | "success";
 
@@ -13,6 +17,8 @@ const Index = () => {
   const [currentState, setCurrentState] = useState<AppState>("welcome");
   const [attendeeName, setAttendeeName] = useState("");
   const [userAccessCode, setUserAccessCode] = useState("");
+  const { user, profile, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   const handleQRCodeScan = () => {
     setCurrentState("form");
@@ -87,9 +93,55 @@ const Index = () => {
     window.location.href = "/program";
   };
 
+  const handleSignOut = () => {
+    signOut();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
+      
+      {/* Auth Status Bar */}
+      {user && (
+        <div className="absolute top-4 right-4 z-30 flex items-center space-x-2">
+          <span className="text-white text-sm font-mono">
+            Welcome, {profile?.full_name || user.email}
+          </span>
+          {isAdmin && (
+            <Button
+              onClick={() => navigate("/admin")}
+              variant="outline"
+              size="sm"
+              className="bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
+            >
+              <Settings className="w-4 h-4 mr-1" />
+              Admin
+            </Button>
+          )}
+          <Button
+            onClick={handleSignOut}
+            variant="outline"
+            size="sm"
+            className="bg-gray-800/80 border-red-500/30 text-red-400 hover:bg-red-900/20 hover:border-red-400"
+          >
+            <LogOut className="w-4 h-4 mr-1" />
+            Sign Out
+          </Button>
+        </div>
+      )}
+
+      {!user && (
+        <div className="absolute top-4 right-4 z-30">
+          <Button
+            onClick={() => navigate("/auth")}
+            variant="outline"
+            size="sm"
+            className="bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
+          >
+            Sign In / Sign Up
+          </Button>
+        </div>
+      )}
       
       <div className="relative z-20">
         {currentState === "welcome" && (
