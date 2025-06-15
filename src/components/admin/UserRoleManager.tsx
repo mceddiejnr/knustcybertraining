@@ -103,7 +103,7 @@ const UserRoleManager = () => {
   };
 
   const deleteUser = async (id: string) => {
-    const userToDelete = users.find(user => user.id === id);
+    const userToDelete: UserRole | undefined = users.find(user => user.id === id);
     if (userToDelete?.role === "admin" && users.filter(u => u.role === "admin").length === 1) {
       toast.error("Cannot delete the last admin user");
       return;
@@ -113,8 +113,8 @@ const UserRoleManager = () => {
       // Find user by email to get auth user ID
       const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
       
-      if (!authListError && authUsers) {
-        const authUser = authUsers.users.find(u => u.email === userToDelete?.email);
+      if (!authListError && authUsers && userToDelete) {
+        const authUser = authUsers.users.find(u => u.email === userToDelete.email);
         
         if (authUser) {
           // Delete from auth
@@ -181,7 +181,7 @@ const UserRoleManager = () => {
 
   const updateUserPassword = async (id: string, newPassword: string) => {
     try {
-      const user = users.find(u => u.id === id);
+      const user: UserRole | undefined = users.find(u => u.id === id);
       if (!user) return;
 
       // Update in auth system
