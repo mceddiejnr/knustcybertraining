@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted with email:", email);
     setLoading(true);
 
     try {
@@ -35,17 +37,21 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             description: "Please enter your full name",
             variant: "destructive",
           });
+          setLoading(false);
           return;
         }
         
+        console.log("Attempting sign up for:", email);
         const { error } = await signUp(email, password, fullName);
         if (error) {
+          console.error("Sign up error:", error);
           toast({
             title: "Sign Up Error",
             description: error.message,
             variant: "destructive",
           });
         } else {
+          console.log("Sign up successful");
           toast({
             title: "Success",
             description: "Please check your email to verify your account",
@@ -53,11 +59,13 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
           onToggleMode();
         }
       } else {
+        console.log("Attempting sign in for:", email);
         const { error } = await signIn(email, password);
         if (error) {
+          console.error("Sign in error:", error);
           toast({
             title: "Sign In Error",
-            description: error.message,
+            description: error.message || "Invalid email or password",
             variant: "destructive",
           });
         } else {
@@ -70,9 +78,22 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
           window.location.href = "/admin";
         }
       }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    console.log("Email input changed to:", newEmail);
+    setEmail(newEmail);
   };
 
   return (
@@ -104,11 +125,17 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
           id="email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           className="relative z-20 bg-gray-700/90 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 text-sm text-white placeholder:text-gray-400 font-mono h-10 pointer-events-auto cursor-text"
           placeholder="your.email@example.com"
           required
+          autoComplete="email"
         />
+        {email && (
+          <p className="text-xs text-green-400 font-mono">
+            Email entered: {email}
+          </p>
+        )}
       </div>
       
       <div className="space-y-1">
@@ -125,6 +152,7 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             className="relative z-20 bg-gray-700/90 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 pr-10 text-sm text-white placeholder:text-gray-400 font-mono h-10 pointer-events-auto cursor-text"
             placeholder="••••••••"
             required
+            autoComplete={isSignUp ? "new-password" : "current-password"}
           />
           <Button
             type="button"
@@ -145,7 +173,7 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
       <Button 
         type="submit" 
         className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-sm relative overflow-hidden z-20"
-        disabled={loading}
+        disabled={loading || !email.trim() || !password.trim()}
       >
         {loading ? (
           <div className="flex items-center space-x-2">
