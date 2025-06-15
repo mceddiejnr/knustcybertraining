@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -78,12 +77,13 @@ const Auth = () => {
       <CyberBackground />
       
       <div className="relative z-20 min-h-screen flex items-center justify-center p-2">
-        {/* KNUST Logo */}
+        {/* KNUST Logo - Now clickable */}
         <div className="absolute top-4 left-4">
           <img 
             alt="KNUST Logo" 
-            className="h-8 sm:h-10 w-auto drop-shadow-lg" 
-            src="/lovable-uploads/1a08e6d9-8dd4-4b15-b847-a9ad35ab8a14.png" 
+            className="h-8 sm:h-10 w-auto drop-shadow-lg cursor-pointer hover:opacity-80 transition-opacity" 
+            src="/lovable-uploads/1a08e6d9-8dd4-4b15-b847-a9ad35ab8a14.png"
+            onClick={() => navigate("/")}
           />
         </div>
 
