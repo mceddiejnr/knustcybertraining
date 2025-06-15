@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -242,8 +243,8 @@ const AdminFeedback = () => {
                         <span className="text-xs text-gray-400">
                           {formatDate(item.timestamp)}
                         </span>
-                        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white h-6 w-6" onClick={() => setSelectedFeedback(item)}>
-                            <View className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white h-8 w-8" onClick={() => setSelectedFeedback(item)}>
+                            <View />
                             <span className="sr-only">View Feedback</span>
                         </Button>
                     </div>
