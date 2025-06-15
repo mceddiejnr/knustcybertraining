@@ -128,7 +128,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     // If signup is successful, add user to user_roles table with participant role
+    // NOTE: Do NOT set last_active - this will be set when admin approves
     if (!error) {
+      console.log('Adding user to user_roles table for approval:', { name: fullName, email });
       const { error: roleError } = await supabase
         .from('user_roles')
         .insert([{
@@ -137,10 +139,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           password: password,
           role: 'participant',
           permissions: ['view_content']
+          // Explicitly NOT setting last_active - this indicates pending approval
         }]);
       
       if (roleError) {
         console.error('Error adding user to roles table:', roleError);
+      } else {
+        console.log('User added to roles table successfully - pending admin approval');
       }
     }
 

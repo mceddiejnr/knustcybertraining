@@ -12,7 +12,7 @@ interface AdminNavigationProps {
 const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationProps) => {
   const navigationItems = [
     { id: "overview", label: "Overview", icon: Settings },
-    { id: "user-approvals", label: "User Approvals", icon: Clock },
+    { id: "user-approvals", label: "Registration Queue", icon: Clock },
     { id: "attendance", label: "Attendance", icon: Users },
     { id: "feedback", label: "Feedback", icon: Star },
     { id: "access-codes", label: "Access Codes", icon: KeyRound },

@@ -37,6 +37,8 @@ const UserApprovalManager = () => {
         return;
       }
 
+      console.log('Found pending users:', userRoles);
+
       const pendingUsersData = userRoles?.map(user => ({
         id: user.id,
         name: user.name,
@@ -160,7 +162,7 @@ const UserApprovalManager = () => {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Clock className="w-5 h-5 text-yellow-400" />
-          <span className="text-white text-lg sm:text-xl">Pending User Approvals</span>
+          <span className="text-white text-lg sm:text-xl">Registration Approval Queue</span>
           <Badge variant="secondary" className="ml-2">
             {pendingUsers.length} pending
           </Badge>
@@ -170,7 +172,7 @@ const UserApprovalManager = () => {
         {pendingUsers.length === 0 ? (
           <div className="text-center py-8 text-gray-400">
             <UserCheck className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No pending user approvals</p>
+            <p>No pending registration approvals</p>
           </div>
         ) : (
           <div className="rounded-lg border border-gray-600 overflow-hidden">
