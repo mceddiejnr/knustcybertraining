@@ -20,8 +20,13 @@ const Index = () => {
   const { user, profile, signOut, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Remove the automatic redirect for admin users - let them stay on index if they want to
-  // Users will be redirected from the login form instead
+  // Redirect authenticated admin users to admin dashboard
+  useEffect(() => {
+    if (!loading && user && profile?.role === 'admin') {
+      console.log("Authenticated admin user detected, redirecting to admin dashboard");
+      navigate("/admin");
+    }
+  }, [user, profile, loading, navigate]);
 
   const handleQRCodeScan = () => {
     setCurrentState("form");
