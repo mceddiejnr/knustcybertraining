@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader } from "@/components/ui/loader";
 import { Eye, EyeOff, User, Mail, Lock, UserPlus, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -176,8 +176,8 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
         disabled={loading || !email.trim() || !password.trim()}
       >
         {loading ? (
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex items-center space-x-3">
+            <Loader size="sm" variant="minimal" />
             <span className="font-mono text-xs">
               {isSignUp ? "CREATING ACCOUNT..." : "SIGNING IN..."}
             </span>
