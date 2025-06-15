@@ -6,6 +6,7 @@ export interface UserRole {
   email: string;
   password?: string;
   permissions: string[];
-  lastActive?: string;
-  createdAt: string;
+  last_active?: string;
+  created_at: string;
+  updated_at?: string;
 }

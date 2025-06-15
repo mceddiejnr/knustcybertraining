@@ -5,71 +5,168 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, Search } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import UserFormDialog from "./UserFormDialog";
 import UserTableRow from "./UserTableRow";
 import { UserRole } from "@/types/user";
-import { getDefaultPermissions, getDefaultUsers } from "@/utils/userUtils";
 
 const UserRoleManager = () => {
   const [users, setUsers] = useState<UserRole[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem("userRoles") || "[]");
-    if (savedUsers.length === 0) {
-      const defaultUsers = getDefaultUsers();
-      setUsers(defaultUsers);
-      localStorage.setItem("userRoles", JSON.stringify(defaultUsers));
-    } else {
-      setUsers(savedUsers);
-    }
+    loadUsers();
   }, []);
 
-  const saveUsers = (updatedUsers: UserRole[]) => {
-    setUsers(updatedUsers);
-    localStorage.setItem("userRoles", JSON.stringify(updatedUsers));
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading users:', error);
+        toast.error('Failed to load users');
+        return;
+      }
+
+      if (data) {
+        setUsers(data);
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+      toast.error('Failed to load users');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const addUser = (newUser: UserRole) => {
-    const updatedUsers = [...users, newUser];
-    saveUsers(updatedUsers);
+  const addUser = async (newUser: Omit<UserRole, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .insert([newUser])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding user:', error);
+        toast.error('Failed to add user');
+        return;
+      }
+
+      if (data) {
+        setUsers(prev => [data, ...prev]);
+        toast.success(`User ${data.name} created successfully`);
+      }
+    } catch (error) {
+      console.error('Error adding user:', error);
+      toast.error('Failed to add user');
+    }
   };
 
-  const deleteUser = (id: string) => {
+  const deleteUser = async (id: string) => {
     const userToDelete = users.find(user => user.id === id);
     if (userToDelete?.role === "admin" && users.filter(u => u.role === "admin").length === 1) {
       toast.error("Cannot delete the last admin user");
       return;
     }
-    
-    const updatedUsers = users.filter(user => user.id !== id);
-    saveUsers(updatedUsers);
-    toast.success("User deleted successfully");
+
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting user:', error);
+        toast.error('Failed to delete user');
+        return;
+      }
+
+      setUsers(prev => prev.filter(user => user.id !== id));
+      toast.success("User deleted successfully");
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Failed to delete user');
+    }
   };
 
-  const updateUserRole = (id: string, newRole: "admin" | "facilitator" | "participant" | "guest") => {
+  const updateUserRole = async (id: string, newRole: "admin" | "facilitator" | "participant" | "guest") => {
     const user = users.find(u => u.id === id);
     if (user?.role === "admin" && newRole !== "admin" && users.filter(u => u.role === "admin").length === 1) {
       toast.error("Cannot change role of the last admin user");
       return;
     }
-    
-    const updatedUsers = users.map(user => 
-      user.id === id 
-        ? { ...user, role: newRole, permissions: getDefaultPermissions(newRole) }
-        : user
-    );
-    saveUsers(updatedUsers);
-    toast.success("User role updated successfully");
+
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ 
+          role: newRole,
+          permissions: getDefaultPermissions(newRole)
+        })
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error updating user role:', error);
+        toast.error('Failed to update user role');
+        return;
+      }
+
+      setUsers(prev => prev.map(user => 
+        user.id === id 
+          ? { ...user, role: newRole, permissions: getDefaultPermissions(newRole) }
+          : user
+      ));
+      toast.success("User role updated successfully");
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      toast.error('Failed to update user role');
+    }
   };
 
-  const updateUserPassword = (id: string, newPassword: string) => {
-    const updatedUsers = users.map(user => 
-      user.id === id 
-        ? { ...user, password: newPassword }
-        : user
-    );
-    saveUsers(updatedUsers);
+  const updateUserPassword = async (id: string, newPassword: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ password: newPassword })
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error updating password:', error);
+        toast.error('Failed to update password');
+        return;
+      }
+
+      setUsers(prev => prev.map(user => 
+        user.id === id 
+          ? { ...user, password: newPassword }
+          : user
+      ));
+      toast.success("Password updated successfully");
+    } catch (error) {
+      console.error('Error updating password:', error);
+      toast.error('Failed to update password');
+    }
+  };
+
+  const getDefaultPermissions = (role: string): string[] => {
+    switch (role) {
+      case "admin":
+        return ["read", "write", "delete", "manage_users", "manage_settings"];
+      case "facilitator":
+        return ["read", "write", "manage_content"];
+      case "participant":
+        return ["read", "write"];
+      case "guest":
+        return ["read"];
+      default:
+        return ["read"];
+    }
   };
 
   const filteredUsers = users.filter(user =>
@@ -78,14 +175,22 @@ const UserRoleManager = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin w-8 h-8 border-4 border-green-300 border-t-green-600 rounded-full"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between text-white">
+          <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-green-400" />
-              <span>User Role Management</span>
+              <span className="text-white text-lg sm:text-xl">User Role Management</span>
             </div>
             <UserFormDialog users={users} onAddUser={addUser} />
           </CardTitle>
@@ -102,31 +207,33 @@ const UserRoleManager = () => {
             />
           </div>
 
-          {/* Users Table */}
+          {/* Users Table - Mobile responsive */}
           <div className="rounded-lg border border-gray-600 overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-gray-600 bg-gray-700/50">
-                  <TableHead className="text-gray-300">Name</TableHead>
-                  <TableHead className="text-gray-300">Email</TableHead>
-                  <TableHead className="text-gray-300">Role</TableHead>
-                  <TableHead className="text-gray-300">Permissions</TableHead>
-                  <TableHead className="text-gray-300">Created</TableHead>
-                  <TableHead className="text-gray-300">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredUsers.map((user) => (
-                  <UserTableRow
-                    key={user.id}
-                    user={user}
-                    onRoleUpdate={updateUserRole}
-                    onPasswordUpdate={updateUserPassword}
-                    onDelete={deleteUser}
-                  />
-                ))}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-gray-600 bg-gray-700/50">
+                    <TableHead className="text-gray-300 min-w-[120px]">Name</TableHead>
+                    <TableHead className="text-gray-300 min-w-[150px] hidden sm:table-cell">Email</TableHead>
+                    <TableHead className="text-gray-300 min-w-[100px]">Role</TableHead>
+                    <TableHead className="text-gray-300 min-w-[120px] hidden md:table-cell">Permissions</TableHead>
+                    <TableHead className="text-gray-300 min-w-[100px] hidden lg:table-cell">Created</TableHead>
+                    <TableHead className="text-gray-300 min-w-[150px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredUsers.map((user) => (
+                    <UserTableRow
+                      key={user.id}
+                      user={user}
+                      onRoleUpdate={updateUserRole}
+                      onPasswordUpdate={updateUserPassword}
+                      onDelete={deleteUser}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
 
           {filteredUsers.length === 0 && (
