@@ -195,7 +195,7 @@ const UserRoleManager = () => {
       const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
       
       if (!authListError && authUsers) {
-        const authUser = authUsers.users.find(u => u.email === user.email);
+        const authUser = authUsers.users.find(authU => authU.email === user.email);
         
         if (authUser) {
           const { error: authUpdateError } = await supabase.auth.admin.updateUserById(
