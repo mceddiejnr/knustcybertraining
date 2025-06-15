@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -78,7 +79,7 @@ const Auth = () => {
       
       <div className="relative z-20 min-h-screen flex items-center justify-center p-2">
         {/* KNUST Logo - Now clickable */}
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4 z-30">
           <img 
             alt="KNUST Logo" 
             className="h-8 sm:h-10 w-auto drop-shadow-lg cursor-pointer hover:opacity-80 transition-opacity" 
@@ -87,12 +88,12 @@ const Auth = () => {
           />
         </div>
 
-        <Card className="w-full max-w-sm bg-gray-800/95 backdrop-blur-xl shadow-2xl border border-green-500/30 rounded-2xl overflow-hidden relative">
+        <Card className="w-full max-w-sm bg-gray-800/95 backdrop-blur-xl shadow-2xl border border-green-500/30 rounded-2xl overflow-hidden relative z-10">
           {/* Glowing border effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500/20 via-transparent to-green-500/20 blur-sm"></div>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500/20 via-transparent to-green-500/20 blur-sm -z-10"></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-green-600 z-10"></div>
           
-          <CardHeader className="text-center space-y-4 pt-6 pb-4 relative">
+          <CardHeader className="text-center space-y-4 pt-6 pb-4 relative z-10">
             <SecurityIcon />
 
             <div className="space-y-1">
@@ -112,7 +113,7 @@ const Auth = () => {
             </div>
           </CardHeader>
           
-          <CardContent className="px-6 pb-6">
+          <CardContent className="px-6 pb-6 relative z-10">
             <form onSubmit={handleSubmit} className="space-y-4">
               {isSignUp && (
                 <div className="space-y-1">
@@ -125,7 +126,7 @@ const Auth = () => {
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="bg-gray-700/80 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 text-sm text-white placeholder:text-gray-400 font-mono h-8"
+                    className="relative z-20 bg-gray-700/90 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 text-sm text-white placeholder:text-gray-400 font-mono h-10 pointer-events-auto cursor-text"
                     placeholder="Enter your full name"
                     required={isSignUp}
                   />
@@ -142,7 +143,7 @@ const Auth = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-gray-700/80 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 text-sm text-white placeholder:text-gray-400 font-mono h-8"
+                  className="relative z-20 bg-gray-700/90 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 text-sm text-white placeholder:text-gray-400 font-mono h-10 pointer-events-auto cursor-text"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -159,7 +160,7 @@ const Auth = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-700/80 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 pr-10 text-sm text-white placeholder:text-gray-400 font-mono h-8"
+                    className="relative z-20 bg-gray-700/90 border-gray-600 focus:border-green-400 focus:ring-green-400/20 rounded-lg py-2 pr-10 text-sm text-white placeholder:text-gray-400 font-mono h-10 pointer-events-auto cursor-text"
                     placeholder="••••••••"
                     required
                   />
@@ -167,7 +168,7 @@ const Auth = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-2 py-1 hover:bg-transparent text-gray-400 hover:text-green-400"
+                    className="absolute right-0 top-0 h-full px-2 py-1 hover:bg-transparent text-gray-400 hover:text-green-400 z-30 pointer-events-auto"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -181,7 +182,7 @@ const Auth = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-sm relative overflow-hidden"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-sm relative overflow-hidden z-20"
                 disabled={loading}
               >
                 {loading ? (
@@ -206,7 +207,7 @@ const Auth = () => {
               <Button 
                 variant="ghost" 
                 onClick={() => setIsSignUp(!isSignUp)}
-                className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50"
+                className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50 z-20 relative"
               >
                 {isSignUp ? "Already have an account? Sign In" : "Need an account? Sign Up"}
               </Button>
@@ -214,7 +215,7 @@ const Auth = () => {
               <Button 
                 variant="ghost" 
                 onClick={() => navigate("/")} 
-                className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50"
+                className="text-gray-400 hover:text-white text-xs font-mono hover:bg-gray-700/50 z-20 relative"
               >
                 ← Return to Main System
               </Button>
