@@ -55,15 +55,15 @@ const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
 
   if (isSubmitted) {
     const successContent = (
-      <div className={!isInDrawer ? "p-8 text-center" : "text-center pt-8"}>
-        <div className="flex justify-center mb-4">
-          <div className="p-4 bg-green-600/20 rounded-full">
-            <CheckCircle className="w-8 h-8 text-green-400" />
+      <div className={cn("text-center", !isInDrawer ? "p-8" : "pt-8")}>
+        <div className="flex justify-center mb-6">
+          <div className="p-4 bg-green-500/10 rounded-full border border-green-500/20 shadow-lg shadow-green-500/10">
+            <CheckCircle className="w-12 h-12 text-green-400" />
           </div>
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">Thank You!</h3>
-        <p className="text-gray-300">
-          Your feedback has been submitted successfully. We appreciate your time and input!
+        <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
+        <p className="text-gray-400 max-w-sm mx-auto">
+          Your feedback is invaluable. We're now one step closer to perfecting our programs.
         </p>
       </div>
     );
@@ -78,11 +78,11 @@ const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
   }
 
   const formContent = (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <fieldset className="space-y-3">
-        <legend className="text-white font-medium block text-base">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-3">
+        <Label className="text-base font-medium text-white">
           Overall Rating *
-        </legend>
+        </Label>
         <div className="flex items-center gap-2">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
@@ -105,116 +105,114 @@ const FeedbackForm = ({ isInDrawer = false }: { isInDrawer?: boolean }) => {
             </span>
           )}
         </div>
-      </fieldset>
+      </div>
 
-      <div className="space-y-6">
-        <div>
-          <Label className="text-white font-medium mb-3 block text-base">
-            How satisfied were you with the training?
-          </Label>
-          <RadioGroup
-            value={overallSatisfaction}
-            onValueChange={setOverallSatisfaction}
-            className="flex flex-wrap gap-2"
-          >
-            {["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"].map(
-              (option) => (
-                <div key={option}>
-                  <RadioGroupItem
-                    value={option}
-                    id={`${option}-${isInDrawer}`}
-                    className="sr-only"
-                  />
-                  <Label
-                    htmlFor={`${option}-${isInDrawer}`}
-                    className={cn(
-                      "cursor-pointer rounded-md border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-400 transition-colors hover:bg-gray-700 hover:text-white",
-                      overallSatisfaction === option &&
-                        "bg-green-900/50 border-green-500 text-green-300 ring-1 ring-green-500"
-                    )}
-                  >
-                    {option}
-                  </Label>
-                </div>
-              )
-            )}
-          </RadioGroup>
-        </div>
-        
-        <div>
-          <Label className="text-white font-medium mb-3 block text-base">
-            Would you recommend this training to colleagues?
-          </Label>
-          <RadioGroup
-            value={wouldRecommend}
-            onValueChange={setWouldRecommend}
-            className="flex flex-wrap gap-2"
-          >
-            {["Definitely", "Probably", "Maybe", "Probably Not", "Definitely Not"].map(
-              (option) => (
-                <div key={option}>
-                  <RadioGroupItem
-                    value={option}
-                    id={`recommend-${option}-${isInDrawer}`}
-                    className="sr-only"
-                  />
-                  <Label
-                    htmlFor={`recommend-${option}-${isInDrawer}`}
-                    className={cn(
-                      "cursor-pointer rounded-md border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-400 transition-colors hover:bg-gray-700 hover:text-white",
-                      wouldRecommend === option &&
-                        "bg-green-900/50 border-green-500 text-green-300 ring-1 ring-green-500"
-                    )}
-                  >
-                    {option}
-                  </Label>
-                </div>
-              )
-            )}
-          </RadioGroup>
-        </div>
-        
-        <div>
-          <Label htmlFor="most-valuable" className="text-white font-medium mb-3 block text-base">
-            What was the most valuable part of the training?
-          </Label>
-          <Textarea
-            id="most-valuable"
-            value={mostValuable}
-            onChange={(e) => setMostValuable(e.target.value)}
-            placeholder="e.g., Password security demonstration..."
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-1 focus:ring-green-500 focus:border-green-500"
-            rows={3}
-          />
-        </div>
+      <div className="space-y-3">
+        <Label className="text-base font-medium text-white">
+          How satisfied were you with the training?
+        </Label>
+        <RadioGroup
+          value={overallSatisfaction}
+          onValueChange={setOverallSatisfaction}
+          className="flex flex-wrap gap-2"
+        >
+          {["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"].map(
+            (option) => (
+              <div key={option}>
+                <RadioGroupItem
+                  value={option}
+                  id={`${option}-${isInDrawer}`}
+                  className="sr-only"
+                />
+                <Label
+                  htmlFor={`${option}-${isInDrawer}`}
+                  className={cn(
+                    "cursor-pointer rounded-md border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-400 transition-all duration-200 hover:bg-gray-700 hover:text-white",
+                    overallSatisfaction === option &&
+                      "bg-green-900/50 border-green-500 text-green-300 ring-1 ring-green-500"
+                  )}
+                >
+                  {option}
+                </Label>
+              </div>
+            )
+          )}
+        </RadioGroup>
+      </div>
+      
+      <div className="space-y-3">
+        <Label className="text-base font-medium text-white">
+          Would you recommend this training to colleagues?
+        </Label>
+        <RadioGroup
+          value={wouldRecommend}
+          onValueChange={setWouldRecommend}
+          className="flex flex-wrap gap-2"
+        >
+          {["Definitely", "Probably", "Maybe", "Probably Not", "Definitely Not"].map(
+            (option) => (
+              <div key={option}>
+                <RadioGroupItem
+                  value={option}
+                  id={`recommend-${option}-${isInDrawer}`}
+                  className="sr-only"
+                />
+                <Label
+                  htmlFor={`recommend-${option}-${isInDrawer}`}
+                  className={cn(
+                    "cursor-pointer rounded-md border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-400 transition-all duration-200 hover:bg-gray-700 hover:text-white",
+                    wouldRecommend === option &&
+                      "bg-green-900/50 border-green-500 text-green-300 ring-1 ring-green-500"
+                  )}
+                >
+                  {option}
+                </Label>
+              </div>
+            )
+          )}
+        </RadioGroup>
+      </div>
+      
+      <div className="space-y-3">
+        <Label htmlFor="most-valuable" className="text-base font-medium text-white">
+          What was the most valuable part of the training?
+        </Label>
+        <Textarea
+          id="most-valuable"
+          value={mostValuable}
+          onChange={(e) => setMostValuable(e.target.value)}
+          placeholder="e.g., Password security demonstration..."
+          className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          rows={3}
+        />
+      </div>
 
-        <div>
-          <Label htmlFor="improvements" className="text-white font-medium mb-3 block text-base">
-            What could be improved?
-          </Label>
-          <Textarea
-            id="improvements"
-            value={improvements}
-            onChange={(e) => setImprovements(e.target.value)}
-            placeholder="Suggestions for making the training more effective..."
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-1 focus:ring-green-500 focus:border-green-500"
-            rows={3}
-          />
-        </div>
+      <div className="space-y-3">
+        <Label htmlFor="improvements" className="text-base font-medium text-white">
+          What could be improved?
+        </Label>
+        <Textarea
+          id="improvements"
+          value={improvements}
+          onChange={(e) => setImprovements(e.target.value)}
+          placeholder="Suggestions for making the training more effective..."
+          className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          rows={3}
+        />
+      </div>
 
-        <div>
-          <Label htmlFor="additional-comments" className="text-white font-medium mb-3 block text-base">
-            Additional Comments
-          </Label>
-          <Textarea
-            id="additional-comments"
-            value={additionalComments}
-            onChange={(e) => setAdditionalComments(e.target.value)}
-            placeholder="Any other feedback or suggestions..."
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-1 focus:ring-green-500 focus:border-green-500"
-            rows={4}
-          />
-        </div>
+      <div className="space-y-3">
+        <Label htmlFor="additional-comments" className="text-base font-medium text-white">
+          Additional Comments
+        </Label>
+        <Textarea
+          id="additional-comments"
+          value={additionalComments}
+          onChange={(e) => setAdditionalComments(e.target.value)}
+          placeholder="Any other feedback or suggestions..."
+          className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          rows={4}
+        />
       </div>
 
       <Button
