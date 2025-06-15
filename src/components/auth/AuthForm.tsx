@@ -66,8 +66,8 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             title: "Welcome back!",
             description: "Successfully signed in",
           });
-          // Force navigation to admin dashboard
-          navigate("/admin", { replace: true });
+          // Use window.location to force navigation
+          window.location.href = "/admin";
         }
       }
     } finally {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,12 +20,8 @@ const Index = () => {
   const { user, profile, signOut, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect admin users to admin dashboard when they're authenticated
-  useEffect(() => {
-    if (!loading && user && isAdmin) {
-      navigate("/admin");
-    }
-  }, [user, isAdmin, loading, navigate]);
+  // Remove the automatic redirect for admin users - let them stay on index if they want to
+  // Users will be redirected from the login form instead
 
   const handleQRCodeScan = () => {
     setCurrentState("form");
@@ -113,17 +110,15 @@ const Index = () => {
           <span className="text-white text-sm font-mono">
             Welcome, {profile?.full_name || user.email}
           </span>
-          {isAdmin && (
-            <Button
-              onClick={() => navigate("/admin")}
-              variant="outline"
-              size="sm"
-              className="bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            >
-              <Settings className="w-4 h-4 mr-1" />
-              Admin
-            </Button>
-          )}
+          <Button
+            onClick={() => navigate("/admin")}
+            variant="outline"
+            size="sm"
+            className="bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
+          >
+            <Settings className="w-4 h-4 mr-1" />
+            Admin
+          </Button>
           <Button
             onClick={handleSignOut}
             variant="outline"
