@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -103,8 +102,13 @@ const UserRoleManager = () => {
   };
 
   const deleteUser = async (id: string) => {
-    const userToDelete: UserRole | undefined = users.find(user => user.id === id);
-    if (userToDelete?.role === "admin" && users.filter(u => u.role === "admin").length === 1) {
+    const userToDelete = users.find(user => user.id === id);
+    if (!userToDelete) {
+      toast.error("User not found");
+      return;
+    }
+
+    if (userToDelete.role === "admin" && users.filter(u => u.role === "admin").length === 1) {
       toast.error("Cannot delete the last admin user");
       return;
     }
@@ -113,7 +117,7 @@ const UserRoleManager = () => {
       // Find user by email to get auth user ID
       const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
       
-      if (!authListError && authUsers && userToDelete) {
+      if (!authListError && authUsers) {
         const authUser = authUsers.users.find(u => u.email === userToDelete.email);
         
         if (authUser) {
@@ -181,8 +185,11 @@ const UserRoleManager = () => {
 
   const updateUserPassword = async (id: string, newPassword: string) => {
     try {
-      const user: UserRole | undefined = users.find(u => u.id === id);
-      if (!user) return;
+      const user = users.find(u => u.id === id);
+      if (!user) {
+        toast.error("User not found");
+        return;
+      }
 
       // Update in auth system
       const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
