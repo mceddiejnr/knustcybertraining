@@ -1,260 +1,38 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Search } from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { Users } from "lucide-react";
 import UserFormDialog from "./UserFormDialog";
-import UserTableRow from "./UserTableRow";
+import UserSearch from "./UserSearch";
+import UserTable from "./UserTable";
 import { UserRole } from "@/types/user";
+import { useUserManagement } from "@/hooks/useUserManagement";
+import { addUser, deleteUser, updateUserRole, updateUserPassword } from "@/utils/userManagement";
 
 const UserRoleManager = () => {
-  const [users, setUsers] = useState<UserRole[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { users, setUsers, loading } = useUserManagement();
+  const [filteredUsers, setFilteredUsers] = useState<UserRole[]>([]);
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+  // Update filtered users when users change
+  useState(() => {
+    setFilteredUsers(users);
+  }, [users]);
 
-  const loadUsers = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error loading users:', error);
-        toast.error('Failed to load users');
-        return;
-      }
-
-      if (data) {
-        // Type cast the role to ensure it matches our UserRole interface
-        const typedUsers = data.map(user => ({
-          ...user,
-          role: user.role as "admin" | "facilitator" | "participant" | "guest"
-        }));
-        setUsers(typedUsers);
-      }
-    } catch (error) {
-      console.error('Error loading users:', error);
-      toast.error('Failed to load users');
-    } finally {
-      setLoading(false);
-    }
+  const handleAddUser = async (newUser: Omit<UserRole, 'id' | 'created_at' | 'updated_at'>) => {
+    await addUser(newUser, setUsers);
   };
 
-  const addUser = async (newUser: Omit<UserRole, 'id' | 'created_at' | 'updated_at'>) => {
-    try {
-      // First, create user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: newUser.email,
-        password: newUser.password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: newUser.name,
-          role: newUser.role
-        }
-      });
-
-      if (authError) {
-        console.error('Error creating auth user:', authError);
-        toast.error('Failed to create user account');
-        return;
-      }
-
-      // Then store in user_roles table
-      const { data, error } = await supabase
-        .from('user_roles')
-        .insert([{
-          name: newUser.name,
-          email: newUser.email,
-          password: newUser.password,
-          role: newUser.role,
-          permissions: newUser.permissions,
-          last_active: newUser.last_active
-        }])
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error adding user to roles table:', error);
-        toast.error('Failed to add user to roles table');
-        return;
-      }
-
-      if (data) {
-        const typedUser = {
-          ...data,
-          role: data.role as "admin" | "facilitator" | "participant" | "guest"
-        };
-        setUsers(prev => [typedUser, ...prev]);
-        toast.success(`User ${data.name} created successfully`);
-      }
-    } catch (error) {
-      console.error('Error adding user:', error);
-      toast.error('Failed to add user');
-    }
+  const handleDeleteUser = async (id: string) => {
+    await deleteUser(id, users, setUsers);
   };
 
-  const deleteUser = async (id: string) => {
-    const userToDelete: UserRole | undefined = users.find((user: UserRole) => user.id === id);
-    if (!userToDelete) {
-      toast.error("User not found");
-      return;
-    }
-
-    if (userToDelete.role === "admin" && users.filter(u => u.role === "admin").length === 1) {
-      toast.error("Cannot delete the last admin user");
-      return;
-    }
-
-    try {
-      // Find user by email to get auth user ID
-      const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
-      
-      if (!authListError && authUsers) {
-        const authUser = authUsers.users.find(u => u.email === userToDelete.email);
-        
-        if (authUser) {
-          // Delete from auth
-          const { error: authDeleteError } = await supabase.auth.admin.deleteUser(authUser.id);
-          if (authDeleteError) {
-            console.error('Error deleting auth user:', authDeleteError);
-          }
-        }
-      }
-
-      // Delete from user_roles table
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error deleting user:', error);
-        toast.error('Failed to delete user');
-        return;
-      }
-
-      setUsers(prev => prev.filter(user => user.id !== id));
-      toast.success("User deleted successfully");
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      toast.error('Failed to delete user');
-    }
+  const handleUpdateUserRole = async (id: string, newRole: "admin" | "facilitator" | "participant" | "guest") => {
+    await updateUserRole(id, newRole, users, setUsers);
   };
 
-  const updateUserRole = async (id: string, newRole: "admin" | "facilitator" | "participant" | "guest") => {
-    const user = users.find(u => u.id === id);
-    if (user?.role === "admin" && newRole !== "admin" && users.filter(u => u.role === "admin").length === 1) {
-      toast.error("Cannot change role of the last admin user");
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .update({ 
-          role: newRole,
-          permissions: getDefaultPermissions(newRole)
-        })
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error updating user role:', error);
-        toast.error('Failed to update user role');
-        return;
-      }
-
-      setUsers(prev => prev.map(user => 
-        user.id === id 
-          ? { ...user, role: newRole, permissions: getDefaultPermissions(newRole) }
-          : user
-      ));
-      toast.success("User role updated successfully");
-    } catch (error) {
-      console.error('Error updating user role:', error);
-      toast.error('Failed to update user role');
-    }
+  const handleUpdateUserPassword = async (id: string, newPassword: string) => {
+    await updateUserPassword(id, newPassword, users, setUsers);
   };
-
-  const updateUserPassword = async (id: string, newPassword: string) => {
-    try {
-      const user: UserRole | undefined = users.find((u: UserRole) => u.id === id);
-      if (!user) {
-        toast.error("User not found");
-        return;
-      }
-
-      // Update in auth system
-      const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
-      
-      if (!authListError && authUsers) {
-        const authUser = authUsers.users.find(authU => authU.email === user.email);
-        
-        if (authUser) {
-          const { error: authUpdateError } = await supabase.auth.admin.updateUserById(
-            authUser.id,
-            { password: newPassword }
-          );
-          
-          if (authUpdateError) {
-            console.error('Error updating auth password:', authUpdateError);
-            toast.error('Failed to update password in auth system');
-            return;
-          }
-        }
-      }
-
-      // Update in user_roles table
-      const { error } = await supabase
-        .from('user_roles')
-        .update({ password: newPassword })
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error updating password:', error);
-        toast.error('Failed to update password');
-        return;
-      }
-
-      setUsers(prev => prev.map(user => 
-        user.id === id 
-          ? { ...user, password: newPassword }
-          : user
-      ));
-      toast.success("Password updated successfully");
-    } catch (error) {
-      console.error('Error updating password:', error);
-      toast.error('Failed to update password');
-    }
-  };
-
-  const getDefaultPermissions = (role: string): string[] => {
-    switch (role) {
-      case "admin":
-        return ["read", "write", "delete", "manage_users", "manage_settings"];
-      case "facilitator":
-        return ["read", "write", "manage_content"];
-      case "participant":
-        return ["read", "write"];
-      case "guest":
-        return ["read"];
-      default:
-        return ["read"];
-    }
-  };
-
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   if (loading) {
     return (
@@ -273,55 +51,17 @@ const UserRoleManager = () => {
               <Users className="w-5 h-5 text-green-400" />
               <span className="text-white text-lg sm:text-xl">User Role Management</span>
             </div>
-            <UserFormDialog users={users} onAddUser={addUser} />
+            <UserFormDialog users={users} onAddUser={handleAddUser} />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search users by name, email, or role..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Users Table - Mobile responsive */}
-          <div className="rounded-lg border border-gray-600 overflow-hidden">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-gray-600 bg-gray-700/50">
-                    <TableHead className="text-gray-300 min-w-[120px]">Name</TableHead>
-                    <TableHead className="text-gray-300 min-w-[150px] hidden sm:table-cell">Email</TableHead>
-                    <TableHead className="text-gray-300 min-w-[100px]">Role</TableHead>
-                    <TableHead className="text-gray-300 min-w-[120px] hidden md:table-cell">Permissions</TableHead>
-                    <TableHead className="text-gray-300 min-w-[100px] hidden lg:table-cell">Created</TableHead>
-                    <TableHead className="text-gray-300 min-w-[150px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <UserTableRow
-                      key={user.id}
-                      user={user}
-                      onRoleUpdate={updateUserRole}
-                      onPasswordUpdate={updateUserPassword}
-                      onDelete={deleteUser}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-
-          {filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              No users found matching your search.
-            </div>
-          )}
+          <UserSearch users={users} onFilteredUsersChange={setFilteredUsers} />
+          <UserTable
+            filteredUsers={filteredUsers}
+            onRoleUpdate={handleUpdateUserRole}
+            onPasswordUpdate={handleUpdateUserPassword}
+            onDelete={handleDeleteUser}
+          />
         </CardContent>
       </Card>
     </div>
