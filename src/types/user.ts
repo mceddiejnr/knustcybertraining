@@ -4,7 +4,7 @@ export interface UserRole {
   name: string;
   role: "admin" | "facilitator" | "participant" | "guest";
   email: string;
-  password?: string;
+  password: string;
   permissions: string[];
   last_active?: string;
   created_at: string;

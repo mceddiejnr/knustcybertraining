@@ -50,14 +50,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Fetch user profile
           setTimeout(async () => {
             console.log('Fetching profile for user:', session.user.id);
-            const { data: profileData, error } = await supabase
+            
+            // First check if user exists in profiles table
+            const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
               .single();
             
-            if (error) {
-              console.error('Error fetching profile:', error);
+            if (profileError && profileError.code === 'PGRST116') {
+              // User doesn't exist in profiles, check user_roles table
+              console.log('User not found in profiles, checking user_roles table');
+              const { data: userRoleData, error: userRoleError } = await supabase
+                .from('user_roles')
+                .select('*')
+                .eq('email', session.user.email)
+                .single();
+              
+              if (userRoleData && !userRoleError) {
+                console.log('Found user in user_roles:', userRoleData);
+                // Create profile from user_roles data
+                const { error: insertError } = await supabase
+                  .from('profiles')
+                  .insert([{
+                    id: session.user.id,
+                    full_name: userRoleData.name,
+                    role: userRoleData.role
+                  }]);
+                
+                if (!insertError) {
+                  setProfile({
+                    id: session.user.id,
+                    full_name: userRoleData.name,
+                    role: userRoleData.role as 'admin' | 'facilitator' | 'participant' | 'guest',
+                    created_at: userRoleData.created_at,
+                    updated_at: userRoleData.updated_at || userRoleData.created_at
+                  });
+                }
+              }
             } else if (profileData) {
               console.log('Profile data:', profileData);
               // Type cast the role to ensure it matches our Profile interface

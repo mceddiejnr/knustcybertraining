@@ -34,7 +34,12 @@ const UserRoleManager = () => {
       }
 
       if (data) {
-        setUsers(data);
+        // Type cast the role to ensure it matches our UserRole interface
+        const typedUsers = data.map(user => ({
+          ...user,
+          role: user.role as "admin" | "facilitator" | "participant" | "guest"
+        }));
+        setUsers(typedUsers);
       }
     } catch (error) {
       console.error('Error loading users:', error);
@@ -46,20 +51,49 @@ const UserRoleManager = () => {
 
   const addUser = async (newUser: Omit<UserRole, 'id' | 'created_at' | 'updated_at'>) => {
     try {
+      // First, create user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: newUser.email,
+        password: newUser.password,
+        email_confirm: true,
+        user_metadata: {
+          full_name: newUser.name,
+          role: newUser.role
+        }
+      });
+
+      if (authError) {
+        console.error('Error creating auth user:', authError);
+        toast.error('Failed to create user account');
+        return;
+      }
+
+      // Then store in user_roles table
       const { data, error } = await supabase
         .from('user_roles')
-        .insert([newUser])
+        .insert([{
+          name: newUser.name,
+          email: newUser.email,
+          password: newUser.password,
+          role: newUser.role,
+          permissions: newUser.permissions,
+          last_active: newUser.last_active
+        }])
         .select()
         .single();
 
       if (error) {
-        console.error('Error adding user:', error);
-        toast.error('Failed to add user');
+        console.error('Error adding user to roles table:', error);
+        toast.error('Failed to add user to roles table');
         return;
       }
 
       if (data) {
-        setUsers(prev => [data, ...prev]);
+        const typedUser = {
+          ...data,
+          role: data.role as "admin" | "facilitator" | "participant" | "guest"
+        };
+        setUsers(prev => [typedUser, ...prev]);
         toast.success(`User ${data.name} created successfully`);
       }
     } catch (error) {
@@ -76,6 +110,22 @@ const UserRoleManager = () => {
     }
 
     try {
+      // Find user by email to get auth user ID
+      const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
+      
+      if (!authListError && authUsers) {
+        const authUser = authUsers.users.find(u => u.email === userToDelete?.email);
+        
+        if (authUser) {
+          // Delete from auth
+          const { error: authDeleteError } = await supabase.auth.admin.deleteUser(authUser.id);
+          if (authDeleteError) {
+            console.error('Error deleting auth user:', authDeleteError);
+          }
+        }
+      }
+
+      // Delete from user_roles table
       const { error } = await supabase
         .from('user_roles')
         .delete()
@@ -131,6 +181,30 @@ const UserRoleManager = () => {
 
   const updateUserPassword = async (id: string, newPassword: string) => {
     try {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+
+      // Update in auth system
+      const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
+      
+      if (!authListError && authUsers) {
+        const authUser = authUsers.users.find(u => u.email === user.email);
+        
+        if (authUser) {
+          const { error: authUpdateError } = await supabase.auth.admin.updateUserById(
+            authUser.id,
+            { password: newPassword }
+          );
+          
+          if (authUpdateError) {
+            console.error('Error updating auth password:', authUpdateError);
+            toast.error('Failed to update password in auth system');
+            return;
+          }
+        }
+      }
+
+      // Update in user_roles table
       const { error } = await supabase
         .from('user_roles')
         .update({ password: newPassword })
