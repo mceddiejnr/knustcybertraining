@@ -24,25 +24,26 @@ const UserApprovalManager = () => {
     try {
       setLoading(true);
       
-      // Get all auth users
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      // Get users from user_roles table who don't have last_active set (meaning not approved yet)
+      const { data: userRoles, error: userRolesError } = await supabase
+        .from('user_roles')
+        .select('*')
+        .is('last_active', null)
+        .order('created_at', { ascending: false });
       
-      if (authError) {
-        console.error('Error loading auth users:', authError);
+      if (userRolesError) {
+        console.error('Error loading pending users:', userRolesError);
         toast.error('Failed to load pending users');
         return;
       }
 
-      // Filter users who haven't been confirmed (pending approval)
-      const pendingAuthUsers = authUsers.users.filter(user => !user.email_confirmed_at);
-      
-      const pendingUsersData = pendingAuthUsers.map(user => ({
+      const pendingUsersData = userRoles?.map(user => ({
         id: user.id,
-        name: user.user_metadata?.full_name || user.email,
-        email: user.email || '',
+        name: user.name,
+        email: user.email,
         created_at: user.created_at,
         approved: false
-      }));
+      })) || [];
 
       setPendingUsers(pendingUsersData);
     } catch (error) {
@@ -55,16 +56,29 @@ const UserApprovalManager = () => {
 
   const approveUser = async (userId: string, email: string) => {
     try {
-      // Confirm the user's email in auth
-      const { error: confirmError } = await supabase.auth.admin.updateUserById(
-        userId,
-        { email_confirm: true }
-      );
-
-      if (confirmError) {
-        console.error('Error approving user:', confirmError);
+      // Find the auth user by email
+      const { data: authUsers, error: authUsersError } = await supabase.auth.admin.listUsers();
+      
+      if (authUsersError) {
+        console.error('Error fetching auth users:', authUsersError);
         toast.error('Failed to approve user');
         return;
+      }
+
+      const authUser = authUsers.users.find((user: any) => user.email === email);
+      
+      if (authUser) {
+        // Confirm the user's email in auth
+        const { error: confirmError } = await supabase.auth.admin.updateUserById(
+          authUser.id,
+          { email_confirm: true }
+        );
+
+        if (confirmError) {
+          console.error('Error approving user:', confirmError);
+          toast.error('Failed to approve user');
+          return;
+        }
       }
 
       // Update the user_roles table to mark as approved
@@ -75,6 +89,8 @@ const UserApprovalManager = () => {
 
       if (roleError) {
         console.error('Error updating user role:', roleError);
+        toast.error('Failed to update user status');
+        return;
       }
 
       toast.success('User approved successfully');
@@ -87,13 +103,26 @@ const UserApprovalManager = () => {
 
   const rejectUser = async (userId: string, email: string) => {
     try {
-      // Delete from auth
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
-
-      if (deleteError) {
-        console.error('Error rejecting user:', deleteError);
+      // Find the auth user by email
+      const { data: authUsers, error: authUsersError } = await supabase.auth.admin.listUsers();
+      
+      if (authUsersError) {
+        console.error('Error fetching auth users:', authUsersError);
         toast.error('Failed to reject user');
         return;
+      }
+
+      const authUser = authUsers.users.find((user: any) => user.email === email);
+      
+      if (authUser) {
+        // Delete from auth
+        const { error: deleteError } = await supabase.auth.admin.deleteUser(authUser.id);
+
+        if (deleteError) {
+          console.error('Error rejecting user:', deleteError);
+          toast.error('Failed to reject user');
+          return;
+        }
       }
 
       // Delete from user_roles table
