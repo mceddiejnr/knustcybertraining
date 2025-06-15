@@ -1,12 +1,24 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminHeaderProps {
   onLogout: () => void;
 }
 
 const AdminHeader = ({ onLogout }: AdminHeaderProps) => {
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      onLogout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
     <div className="mb-6 lg:mb-8">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -23,7 +35,7 @@ const AdminHeader = ({ onLogout }: AdminHeaderProps) => {
           <Button onClick={() => window.location.href = "/"} variant="outline" className="bg-gray-800/80 backdrop-blur-sm border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400 text-sm">
             Back to App
           </Button>
-          <Button onClick={onLogout} variant="outline" className="bg-gray-800/80 backdrop-blur-sm text-red-400 border-red-500/30 hover:bg-red-900/20 hover:border-red-400 text-sm">
+          <Button onClick={handleLogout} variant="outline" className="bg-gray-800/80 backdrop-blur-sm text-red-400 border-red-500/30 hover:bg-red-900/20 hover:border-red-400 text-sm">
             <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>

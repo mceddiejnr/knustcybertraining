@@ -172,8 +172,8 @@ export const updateUserPassword = async (
   setUsers: React.Dispatch<React.SetStateAction<UserRole[]>>
 ) => {
   try {
-    const user = users.find((u) => u.id === id);
-    if (!user) {
+    const userToUpdate = users.find((u) => u.id === id);
+    if (!userToUpdate) {
       toast.error("User not found");
       return;
     }
@@ -182,7 +182,7 @@ export const updateUserPassword = async (
     const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
     
     if (!authListError && authUsers) {
-      const authUser = authUsers.users.find(authU => authU.email === user.email);
+      const authUser = authUsers.users.find(authU => authU.email === userToUpdate.email);
       
       if (authUser) {
         const { error: authUpdateError } = await supabase.auth.admin.updateUserById(

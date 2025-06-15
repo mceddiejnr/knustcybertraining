@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
 import UserFormDialog from "./UserFormDialog";
@@ -14,7 +14,7 @@ const UserRoleManager = () => {
   const [filteredUsers, setFilteredUsers] = useState<UserRole[]>([]);
 
   // Update filtered users when users change
-  useState(() => {
+  useEffect(() => {
     setFilteredUsers(users);
   }, [users]);
 
@@ -38,7 +38,6 @@ const UserRoleManager = () => {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin w-8 h-8 border-4 border-green-300 border-t-green-600 rounded-full"></div>
-      </div>
     );
   }
 
