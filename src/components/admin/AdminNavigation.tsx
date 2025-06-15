@@ -28,7 +28,7 @@ const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationPro
 
   const userManagementItems = [
     { id: "user-roles", label: "Manage Roles", icon: UserCog },
-    { id: "user-approvals", label: "Registration Queue", icon: Clock },
+    { id: "user-approvals", label: "User Approval", icon: Clock },
   ];
 
   const isUserManagementSection = userManagementItems.some(item => item.id === currentSection);

@@ -162,7 +162,7 @@ const UserApprovalManager = () => {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Clock className="w-5 h-5 text-yellow-400" />
-          <span className="text-white text-lg sm:text-xl">Registration Approval Queue</span>
+          <span className="text-white text-lg sm:text-xl">User Approval Queue</span>
           <Badge variant="secondary" className="ml-2">
             {pendingUsers.length} pending
           </Badge>
