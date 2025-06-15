@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Download, MessageSquare } from "lucide-react";
@@ -12,13 +11,13 @@ import TrainingSchedule from "@/components/TrainingSchedule";
 import InspirationalMessage from "@/components/InspirationalMessage";
 import QuickActions from "@/components/QuickActions";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 const Program = () => {
@@ -91,8 +90,8 @@ const Program = () => {
         </Tabs>
       </div>
 
-      <Drawer>
-        <DrawerTrigger asChild>
+      <Sheet>
+        <SheetTrigger asChild>
           <Button
             className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:from-green-600 hover:to-green-700 focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center z-30 transition-transform hover:scale-110"
             aria-label="Provide Feedback"
@@ -100,27 +99,22 @@ const Program = () => {
             <MessageSquare className="h-7 w-7" />
             <span className="sr-only">Provide Feedback</span>
           </Button>
-        </DrawerTrigger>
-        <DrawerContent className="bg-gray-900/95 backdrop-blur-sm border-t border-green-500/30 text-white outline-none">
-          <div className="mx-auto w-full max-w-2xl max-h-[90vh] flex flex-col">
-            <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-gray-600 shrink-0" />
-            <div className="overflow-y-auto p-4">
-              <DrawerHeader className="text-left">
-                <DrawerTitle className="flex items-center space-x-2 text-white text-xl">
-                  <MessageSquare className="w-6 h-6 text-green-400" />
-                  <span>Workshop Feedback</span>
-                </DrawerTitle>
-                <DrawerDescription className="text-gray-400 pt-2">
-                  Help us improve future cybersecurity training sessions by sharing your experience.
-                </DrawerDescription>
-              </DrawerHeader>
-              <div className="px-4 pb-4">
-                <FeedbackForm isInDrawer={true} />
-              </div>
-            </div>
+        </SheetTrigger>
+        <SheetContent side="right" className="bg-gray-900/90 backdrop-blur-sm border-l border-green-500/30 text-white outline-none w-full sm:max-w-md p-0">
+          <SheetHeader className="p-6 pb-4 text-left">
+            <SheetTitle className="flex items-center space-x-3 text-white text-2xl">
+              <MessageSquare className="w-7 h-7 text-green-400" />
+              <span>Workshop Feedback</span>
+            </SheetTitle>
+            <SheetDescription className="text-gray-400 pt-2">
+              Your feedback is anonymous and helps us improve.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="overflow-y-auto h-[calc(100vh-120px)] px-6 pb-6">
+            <FeedbackForm isInDrawer={true} />
           </div>
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
