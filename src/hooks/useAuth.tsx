@@ -53,7 +53,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               .select('*')
               .eq('id', session.user.id)
               .single();
-            setProfile(profileData);
+            
+            if (profileData) {
+              // Type cast the role to ensure it matches our Profile interface
+              setProfile({
+                ...profileData,
+                role: profileData.role as 'admin' | 'facilitator' | 'participant' | 'guest'
+              });
+            }
           }, 0);
         } else {
           setProfile(null);
