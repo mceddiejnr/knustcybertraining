@@ -102,7 +102,7 @@ const UserRoleManager = () => {
   };
 
   const deleteUser = async (id: string) => {
-    const userToDelete = users.find(user => user.id === id);
+    const userToDelete: UserRole | undefined = users.find((user: UserRole) => user.id === id);
     if (!userToDelete) {
       toast.error("User not found");
       return;
@@ -185,7 +185,7 @@ const UserRoleManager = () => {
 
   const updateUserPassword = async (id: string, newPassword: string) => {
     try {
-      const user = users.find(u => u.id === id);
+      const user: UserRole | undefined = users.find((u: UserRole) => u.id === id);
       if (!user) {
         toast.error("User not found");
         return;
