@@ -27,7 +27,6 @@ const AdminContent = () => {
   const [currentSection, setCurrentSection] = useState<AdminSection>("overview");
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [qrScans, setQrScans] = useState(0);
-  const { signOut } = useAuth();
 
   const loadAttendees = () => {
     const savedAttendees = JSON.parse(localStorage.getItem("attendees") || "[]");
@@ -56,10 +55,6 @@ const AdminContent = () => {
       clearInterval(interval);
     };
   }, []);
-
-  const handleLogout = () => {
-    signOut();
-  };
 
   const renderContent = () => {
     switch (currentSection) {
@@ -91,7 +86,7 @@ const AdminContent = () => {
       <CyberBackground />
       
       <div className="relative z-20 container mx-auto p-4 lg:p-6">
-        <AdminHeader onLogout={handleLogout} />
+        <AdminHeader />
         <AdminNavigation currentSection={currentSection} onSectionChange={setCurrentSection} />
         
         <div className="animate-fade-in">

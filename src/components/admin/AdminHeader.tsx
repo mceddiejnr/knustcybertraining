@@ -2,21 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
-interface AdminHeaderProps {
-  onLogout: () => void;
-}
-
-const AdminHeader = ({ onLogout }: AdminHeaderProps) => {
+const AdminHeader = () => {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await signOut();
-      onLogout();
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
+    await signOut();
+    navigate("/");
   };
 
   return (
