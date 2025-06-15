@@ -61,12 +61,13 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             variant: "destructive",
           });
         } else {
+          console.log("Sign in successful, navigating to admin");
           toast({
             title: "Welcome back!",
             description: "Successfully signed in",
           });
-          // Redirect to admin dashboard after successful login
-          navigate("/admin");
+          // Force navigation to admin dashboard
+          navigate("/admin", { replace: true });
         }
       }
     } finally {

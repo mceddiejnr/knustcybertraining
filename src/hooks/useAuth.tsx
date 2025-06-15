@@ -42,19 +42,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
           // Fetch user profile
           setTimeout(async () => {
-            const { data: profileData } = await supabase
+            console.log('Fetching profile for user:', session.user.id);
+            const { data: profileData, error } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
               .single();
             
-            if (profileData) {
+            if (error) {
+              console.error('Error fetching profile:', error);
+            } else if (profileData) {
+              console.log('Profile data:', profileData);
               // Type cast the role to ensure it matches our Profile interface
               setProfile({
                 ...profileData,
