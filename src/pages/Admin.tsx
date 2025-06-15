@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import AttendancePanel from "@/components/admin/AttendancePanel";
 import InspirationalMessageManager from "@/components/admin/InspirationalMessageManager";
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
 import AccessCodeManager from "@/components/admin/AccessCodeManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
+import AdminFeedback from "@/components/admin/AdminFeedback";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminOverview from "@/components/admin/AdminOverview";
@@ -12,7 +12,7 @@ import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import CyberBackground from "@/components/CyberBackground";
 import AdminProtection from "@/components/AdminProtection";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback";
 
 interface AttendeeData {
   name: string;
@@ -70,6 +70,8 @@ const AdminContent = () => {
         return <AccessCodeManager />;
       case "user-roles":
         return <UserRoleManager />;
+      case "feedback":
+        return <AdminFeedback />;
       case "analytics":
         return <AdminAnalytics />;
       default:
