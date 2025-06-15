@@ -9,7 +9,7 @@ import AccessCodeForm from "@/components/AccessCodeForm";
 import AccessCodeDisplay from "@/components/AccessCodeDisplay";
 import CyberBackground from "@/components/CyberBackground";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Shield } from "lucide-react";
 
 export type AppState = "welcome" | "form" | "accessCode" | "codeDisplay" | "success";
 
@@ -136,9 +136,10 @@ const Index = () => {
             onClick={() => navigate("/auth")}
             variant="outline"
             size="sm"
-            className="bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
+            className="bg-gray-800/90 backdrop-blur-sm border-green-500/30 hover:bg-gray-700 text-green-400 text-xs sm:text-sm hover:border-green-400"
           >
-            Sign In / Sign Up
+            <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            Admin
           </Button>
         </div>
       )}
