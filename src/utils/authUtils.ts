@@ -19,8 +19,8 @@ export const deleteAuthUser = async (email: string) => {
   // Find user by email to get auth user ID
   const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
   
-  if (!authListError && authUsers) {
-    const authUser = authUsers.users.find(authU => authU.email === email);
+  if (!authListError && authUsers?.users) {
+    const authUser = authUsers.users.find((authU: any) => authU.email === email);
     
     if (authUser) {
       // Delete from auth
@@ -35,8 +35,8 @@ export const deleteAuthUser = async (email: string) => {
 export const updateAuthUserPassword = async (email: string, newPassword: string) => {
   const { data: authUsers, error: authListError } = await supabase.auth.admin.listUsers();
   
-  if (!authListError && authUsers) {
-    const authUser = authUsers.users.find(authU => authU.email === email);
+  if (!authListError && authUsers?.users) {
+    const authUser = authUsers.users.find((authU: any) => authU.email === email);
     
     if (authUser) {
       const { error: authUpdateError } = await supabase.auth.admin.updateUserById(
