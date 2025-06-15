@@ -126,6 +126,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     });
+
+    // If signup is successful, add user to user_roles table with participant role
+    if (!error) {
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert([{
+          name: fullName,
+          email: email,
+          password: password,
+          role: 'participant',
+          permissions: ['view_content']
+        }]);
+      
+      if (roleError) {
+        console.error('Error adding user to roles table:', roleError);
+      }
+    }
+
     return { error };
   };
 

@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { Calendar, Home, Inbox, Search, Settings, Users, MessageSquare, TrendingUp, KeyRound, UserCog, Star } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, Users, MessageSquare, TrendingUp, KeyRound, UserCog, Star, Clock } from "lucide-react";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals";
 
 interface AdminNavigationProps {
   currentSection: AdminSection;
@@ -12,6 +12,7 @@ interface AdminNavigationProps {
 const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationProps) => {
   const navigationItems = [
     { id: "overview", label: "Overview", icon: Settings },
+    { id: "user-approvals", label: "User Approvals", icon: Clock },
     { id: "attendance", label: "Attendance", icon: Users },
     { id: "feedback", label: "Feedback", icon: Star },
     { id: "access-codes", label: "Access Codes", icon: KeyRound },

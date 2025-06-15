@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -51,10 +52,10 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
             variant: "destructive",
           });
         } else {
-          console.log("Sign up successful");
+          console.log("Sign up successful - awaiting admin approval");
           toast({
-            title: "Success",
-            description: "Please check your email to verify your account",
+            title: "Registration Submitted",
+            description: "Your account has been created and is awaiting admin approval. You will be able to login once approved.",
           });
           onToggleMode();
         }
@@ -63,9 +64,15 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
         const { error } = await signIn(email, password);
         if (error) {
           console.error("Sign in error:", error);
+          let errorMessage = "Invalid email or password";
+          
+          if (error.message.includes("Email not confirmed")) {
+            errorMessage = "Your account is awaiting admin approval. Please contact an administrator.";
+          }
+          
           toast({
             title: "Sign In Error",
-            description: error.message || "Invalid email or password",
+            description: errorMessage,
             variant: "destructive",
           });
         } else {
@@ -169,6 +176,14 @@ const AuthForm = ({ isSignUp, onToggleMode }: AuthFormProps) => {
           </Button>
         </div>
       </div>
+
+      {isSignUp && (
+        <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-3">
+          <p className="text-yellow-300 text-xs font-mono">
+            ⚠️ Account requires admin approval before you can login
+          </p>
+        </div>
+      )}
       
       <Button 
         type="submit" 

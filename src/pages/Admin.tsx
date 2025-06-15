@@ -5,6 +5,7 @@ import InspirationalMessageManager from "@/components/admin/InspirationalMessage
 import ProgramOutlineEditor from "@/components/admin/ProgramOutlineEditor";
 import AccessCodeManager from "@/components/admin/AccessCodeManager";
 import UserRoleManager from "@/components/admin/UserRoleManager";
+import UserApprovalManager from "@/components/admin/UserApprovalManager";
 import AdminFeedback from "@/components/admin/AdminFeedback";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminNavigation from "@/components/admin/AdminNavigation";
@@ -14,7 +15,7 @@ import CyberBackground from "@/components/CyberBackground";
 import AuthGuard from "@/components/AuthGuard";
 import { useAuth } from "@/hooks/useAuth";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals";
 
 interface AttendeeData {
   name: string;
@@ -72,6 +73,8 @@ const AdminContent = () => {
         return <AccessCodeManager />;
       case "user-roles":
         return <UserRoleManager />;
+      case "user-approvals":
+        return <UserApprovalManager />;
       case "feedback":
         return <AdminFeedback />;
       case "analytics":
