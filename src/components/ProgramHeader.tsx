@@ -7,7 +7,7 @@ const ProgramHeader = () => {
     <div className="text-center mb-6 sm:mb-8">
       <div className="flex justify-center items-center space-x-4 mb-4">
         <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
+          src="/lovable-uploads/d6c770ee-3058-4298-a368-19c14cead8a0.png" 
           alt="KNUST Logo" 
           className="h-12 sm:h-16 w-auto drop-shadow-lg"
         />

@@ -13,7 +13,7 @@ const SuccessMessage = ({ attendeeName, onViewProgram }: SuccessMessageProps) =>
       {/* KNUST Logo */}
       <div className="absolute top-3 sm:top-6 left-3 sm:left-6">
         <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
+          src="/lovable-uploads/d6c770ee-3058-4298-a368-19c14cead8a0.png" 
           alt="KNUST Logo" 
           className="h-10 sm:h-14 md:h-16 w-auto drop-shadow-lg"
         />

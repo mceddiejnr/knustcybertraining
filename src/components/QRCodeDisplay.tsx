@@ -12,7 +12,7 @@ const QRCodeDisplay = ({ onScan }: QRCodeDisplayProps) => {
       {/* KNUST Logo */}
       <div className="absolute top-4 sm:top-8 left-4 sm:left-8">
         <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
+          src="/lovable-uploads/d6c770ee-3058-4298-a368-19c14cead8a0.png" 
           alt="KNUST Logo" 
           className="h-12 sm:h-16 md:h-20 w-auto drop-shadow-lg"
         />
