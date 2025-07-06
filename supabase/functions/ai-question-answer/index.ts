@@ -16,15 +16,27 @@ serve(async (req) => {
   }
 
   try {
+    console.log('AI Question Answer function called');
+    
     if (!openAIApiKey) {
+      console.error('OpenAI API key not found in environment variables');
       throw new Error('OpenAI API key not configured');
     }
 
-    const { question, context } = await req.json();
+    console.log('OpenAI API key found, processing request...');
+
+    const requestBody = await req.json();
+    console.log('Request body:', JSON.stringify(requestBody, null, 2));
+    
+    const { question, context } = requestBody;
 
     if (!question) {
+      console.error('No question provided in request');
       throw new Error('Question is required');
     }
+
+    console.log('Question received:', question);
+    console.log('Context received:', context);
 
     const systemPrompt = `You are a helpful AI assistant for a cybersecurity training workshop. Your role is to help answer questions from workshop participants. 
 
@@ -38,6 +50,8 @@ Guidelines:
 - Keep responses concise but thorough (aim for 2-3 paragraphs max)
 
 Additional context: ${context || 'No additional context provided'}`;
+
+    console.log('Making request to OpenAI API...');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -56,16 +70,25 @@ Additional context: ${context || 'No additional context provided'}`;
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
+
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('OpenAI API error response:', errorText);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    const aiAnswer = data.choices[0]?.message?.content;
+    console.log('OpenAI API response data:', JSON.stringify(data, null, 2));
+    
+    const aiAnswer = data.choices?.[0]?.message?.content;
 
     if (!aiAnswer) {
+      console.error('No answer content in OpenAI response');
       throw new Error('No response from AI');
     }
+
+    console.log('AI answer generated successfully');
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -76,9 +99,11 @@ Additional context: ${context || 'No additional context provided'}`;
 
   } catch (error) {
     console.error('Error in ai-question-answer function:', error);
+    console.error('Error stack:', error.stack);
+    
     return new Response(JSON.stringify({ 
       success: false, 
-      error: error.message 
+      error: error.message || 'Unknown error occurred'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

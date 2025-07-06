@@ -60,6 +60,8 @@ const QuestionsManager = () => {
   const generateAIAnswer = async (question: Question) => {
     setAiLoading(true);
     try {
+      console.log('Calling AI function with question:', question.question);
+      
       const { data, error } = await supabase.functions.invoke('ai-question-answer', {
         body: {
           question: question.question,
@@ -67,8 +69,12 @@ const QuestionsManager = () => {
         }
       });
 
+      console.log('AI function response:', data);
+      console.log('AI function error:', error);
+
       if (error) {
-        throw error;
+        console.error('Supabase function error:', error);
+        throw new Error(`Function call failed: ${error.message}`);
       }
 
       if (data?.success && data?.answer) {
@@ -78,13 +84,15 @@ const QuestionsManager = () => {
           description: "Review and edit the AI-generated answer before saving",
         });
       } else {
-        throw new Error(data?.error || 'Failed to generate AI answer');
+        const errorMessage = data?.error || 'Unknown error occurred';
+        console.error('AI generation failed:', errorMessage);
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error('Error generating AI answer:', error);
       toast({
         title: "Error",
-        description: "Failed to generate AI answer. Please try again.",
+        description: `Failed to generate AI answer: ${error.message}. Please try again.`,
         variant: "destructive",
       });
     } finally {
