@@ -23,7 +23,11 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    console.log('OpenAI API key found, processing request...');
+    // Log key info (first/last few chars for security)
+    const keyPreview = openAIApiKey.length > 10 
+      ? `${openAIApiKey.substring(0, 7)}...${openAIApiKey.substring(openAIApiKey.length - 4)}`
+      : 'KEY_TOO_SHORT';
+    console.log('OpenAI API key found, length:', openAIApiKey.length, 'preview:', keyPreview);
 
     const requestBody = await req.json();
     console.log('Request body:', JSON.stringify(requestBody, null, 2));
@@ -71,24 +75,33 @@ Additional context: ${context || 'No additional context provided'}`;
     });
 
     console.log('OpenAI API response status:', response.status);
+    console.log('OpenAI API response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('OpenAI API error response:', errorText);
+      
+      // Check if it's a quota issue
+      if (response.status === 429) {
+        console.error('429 error - quota exceeded or rate limited');
+        throw new Error(`OpenAI API quota exceeded. Please check your OpenAI account billing and usage limits. Status: ${response.status}`);
+      }
+      
       throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI API response data:', JSON.stringify(data, null, 2));
+    console.log('OpenAI API response data keys:', Object.keys(data));
     
     const aiAnswer = data.choices?.[0]?.message?.content;
 
     if (!aiAnswer) {
       console.error('No answer content in OpenAI response');
+      console.error('Full response data:', JSON.stringify(data, null, 2));
       throw new Error('No response from AI');
     }
 
-    console.log('AI answer generated successfully');
+    console.log('AI answer generated successfully, length:', aiAnswer.length);
 
     return new Response(JSON.stringify({ 
       success: true, 
