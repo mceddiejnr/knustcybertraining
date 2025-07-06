@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Reply, Clock, CheckCircle2 } from "lucide-react";
+import { MessageCircle, Reply, Clock, CheckCircle2, Bot, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,6 +24,7 @@ const QuestionsManager = () => {
   const [loading, setLoading] = useState(true);
   const [answeringQuestion, setAnsweringQuestion] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const { toast } = useToast();
 
   const loadQuestions = async () => {
@@ -53,6 +54,41 @@ const QuestionsManager = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateAIAnswer = async (question: Question) => {
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-question-answer', {
+        body: {
+          question: question.question,
+          context: `User name: ${question.name}, Email: ${question.email || 'Not provided'}`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.success && data?.answer) {
+        setAnswerText(data.answer);
+        toast({
+          title: "AI Answer Generated",
+          description: "Review and edit the AI-generated answer before saving",
+        });
+      } else {
+        throw new Error(data?.error || 'Failed to generate AI answer');
+      }
+    } catch (error) {
+      console.error('Error generating AI answer:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate AI answer. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -186,18 +222,36 @@ const QuestionsManager = () => {
 
               {answeringQuestion === question.id ? (
                 <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">Answer:</span>
+                    <Button
+                      onClick={() => generateAIAnswer(question)}
+                      disabled={aiLoading}
+                      size="sm"
+                      variant="outline"
+                      className="text-xs border-blue-500/30 text-blue-400 hover:bg-blue-600/10"
+                    >
+                      {aiLoading ? (
+                        <div className="animate-spin w-3 h-3 border-2 border-blue-300 border-t-blue-600 rounded-full mr-1" />
+                      ) : (
+                        <Sparkles className="w-3 h-3 mr-1" />
+                      )}
+                      {aiLoading ? 'Generating...' : 'AI Assist'}
+                    </Button>
+                  </div>
                   <Textarea
                     value={answerText}
                     onChange={(e) => setAnswerText(e.target.value)}
                     placeholder="Type your answer here..."
                     className="bg-gray-600/50 border-gray-500 text-white text-sm"
-                    rows={3}
+                    rows={4}
                   />
                   <div className="flex space-x-2">
                     <Button
                       onClick={() => handleAnswerQuestion(question.id)}
                       size="sm"
                       className="bg-green-600 hover:bg-green-700 text-xs"
+                      disabled={!answerText.trim()}
                     >
                       Save Answer
                     </Button>
