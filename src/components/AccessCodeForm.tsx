@@ -29,7 +29,7 @@ const AccessCodeForm = ({ onCodeSubmit, onBackToRegistration }: AccessCodeFormPr
       {/* KNUST Logo */}
       <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
         <img 
-          src="/lovable-uploads/edb649cb-0092-4609-a197-946f2fe735de.png" 
+          src="/lovable-uploads/98006db4-3ae7-471e-99ff-6aba30337ee2.png" 
           alt="KNUST Logo" 
           className="h-8 sm:h-12 w-auto drop-shadow-lg"
         />
