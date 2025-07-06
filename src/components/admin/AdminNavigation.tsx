@@ -1,14 +1,19 @@
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Calendar, Settings, Users, MessageSquare, TrendingUp, KeyRound, UserCog, Star, Clock, Download } from "lucide-react";
+import { 
+  BarChart3, 
+  Users, 
+  MessageSquare, 
+  FileText, 
+  Key, 
+  Shield,
+  MessageCircle,
+  UserCheck,
+  Folder,
+  HelpCircle
+} from "lucide-react";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions";
 
 interface AdminNavigationProps {
   currentSection: AdminSection;
@@ -16,71 +21,43 @@ interface AdminNavigationProps {
 }
 
 const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationProps) => {
-  const navigationItems = [
-    { id: "overview", label: "Overview", icon: Settings },
-    { id: "attendance", label: "Attendance", icon: Users },
-    { id: "feedback", label: "Feedback", icon: Star },
-    { id: "messages", label: "Messages", icon: MessageSquare },
-    { id: "program", label: "Program", icon: Calendar },
-    { id: "analytics", label: "Analytics", icon: TrendingUp },
-    { id: "resources", label: "Resources", icon: Download },
+  const navItems = [
+    { id: "overview" as AdminSection, label: "Overview", icon: BarChart3 },
+    { id: "attendance" as AdminSection, label: "Attendance", icon: Users },
+    { id: "questions" as AdminSection, label: "Questions", icon: HelpCircle },
+    { id: "feedback" as AdminSection, label: "Feedback", icon: MessageCircle },
+    { id: "messages" as AdminSection, label: "Messages", icon: MessageSquare },
+    { id: "program" as AdminSection, label: "Program", icon: FileText },
+    { id: "resources" as AdminSection, label: "Resources", icon: Folder },
+    { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
+    { id: "access-codes" as AdminSection, label: "Access Codes", icon: Key },
+    { id: "user-roles" as AdminSection, label: "User Roles", icon: Shield },
+    { id: "user-approvals" as AdminSection, label: "User Approvals", icon: UserCheck },
   ];
-
-  const userManagementItems = [
-    { id: "user-roles", label: "Manage Roles", icon: UserCog },
-    { id: "user-approvals", label: "User Approval", icon: Clock },
-    { id: "access-codes", label: "Access Codes", icon: KeyRound },
-  ];
-
-  const isUserManagementSection = userManagementItems.some(item => item.id === currentSection);
 
   return (
-    <div className="flex flex-wrap gap-2 mb-6 lg:mb-8">
-      {navigationItems.map(({ id, label, icon: Icon }) => (
-        <Button 
-          key={id}
-          onClick={() => onSectionChange(id as AdminSection)} 
-          variant={currentSection === id ? "default" : "outline"} 
-          className={currentSection === id 
-            ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg" 
-            : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-          }
-          size="sm"
-        >
-          <Icon className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">{label}</span>
-          <span className="sm:hidden">{label.split(' ')[0]}</span>
-        </Button>
-      ))}
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant={isUserManagementSection ? "default" : "outline"}
-            className={isUserManagementSection
-              ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg"
-              : "bg-gray-800/80 border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
-            }
-            size="sm"
-          >
-            <UserCog className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">User Management</span>
-            <span className="sm:hidden">Users</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-gray-900 border-green-500/50 text-green-300">
-          {userManagementItems.map(({ id, label, icon: Icon }) => (
-            <DropdownMenuItem
-              key={id}
-              onClick={() => onSectionChange(id as AdminSection)}
-              className="hover:bg-gray-800 focus:bg-gray-800 cursor-pointer"
+    <div className="mb-6 lg:mb-8">
+      <div className="flex flex-wrap gap-2 lg:gap-3">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Button
+              key={item.id}
+              onClick={() => onSectionChange(item.id)}
+              variant={currentSection === item.id ? "default" : "outline"}
+              className={`${
+                currentSection === item.id
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-gray-800/80 backdrop-blur-sm border-green-500/30 text-green-400 hover:bg-gray-700 hover:border-green-400"
+              } text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 h-auto`}
             >
-              <Icon className="w-4 h-4 mr-2" />
-              <span>{label}</span>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">{item.label}</span>
+              <span className="sm:hidden">{item.label.split(' ')[0]}</span>
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -105,6 +105,42 @@ export type Database = {
         }
         Relationships: []
       }
+      questions: {
+        Row: {
+          answer: string | null
+          answered_at: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          question: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answer?: string | null
+          answered_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          question: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answer?: string | null
+          answered_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          question?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           created_at: string | null

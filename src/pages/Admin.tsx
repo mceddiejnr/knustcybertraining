@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import AttendancePanel from "@/components/admin/AttendancePanel";
 import InspirationalMessageManager from "@/components/admin/InspirationalMessageManager";
@@ -10,12 +11,13 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
+import QuestionsManager from "@/components/admin/QuestionsManager";
 import CyberBackground from "@/components/CyberBackground";
 import AuthGuard from "@/components/AuthGuard";
 import { useAuth } from "@/hooks/useAuth";
 import ResourceManager from "@/components/admin/ResourceManager";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions";
 
 interface AttendeeData {
   name: string;
@@ -76,6 +78,8 @@ const AdminContent = () => {
         return <AdminAnalytics />;
       case "resources":
         return <ResourceManager />;
+      case "questions":
+        return <QuestionsManager />;
       default:
         return <AdminOverview attendees={attendees} qrScans={qrScans} />;
     }
