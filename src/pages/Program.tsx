@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Download, MessageSquare } from "lucide-react";
@@ -10,6 +11,7 @@ import KeyTopics from "@/components/KeyTopics";
 import TrainingSchedule from "@/components/TrainingSchedule";
 import InspirationalMessage from "@/components/InspirationalMessage";
 import QuickActions from "@/components/QuickActions";
+import { useEvents } from "@/hooks/useEvents";
 import {
   Sheet,
   SheetContent,
@@ -23,8 +25,12 @@ import { Button } from "@/components/ui/button";
 const Program = () => {
   const [inspirationalMessage, setInspirationalMessage] = useState("");
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
+  const { activeEvent, loadEvents } = useEvents();
 
   useEffect(() => {
+    // Force reload events when Program page loads
+    loadEvents();
+    
     const savedMessage = localStorage.getItem("inspirationalMessage");
     if (savedMessage) {
       setInspirationalMessage(savedMessage);
@@ -36,7 +42,12 @@ const Program = () => {
     if (savedCompleted) {
       setCompletedSessions(JSON.parse(savedCompleted));
     }
-  }, []);
+  }, [loadEvents]);
+
+  // Debug log to see what's happening
+  useEffect(() => {
+    console.log('Program page - activeEvent:', activeEvent);
+  }, [activeEvent]);
 
   const toggleSessionCompletion = (index: number) => {
     const updatedCompleted = completedSessions.includes(index)
