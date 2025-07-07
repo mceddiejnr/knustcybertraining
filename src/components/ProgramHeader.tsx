@@ -2,9 +2,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, MapPin, Award } from "lucide-react";
 import { useEvents } from "@/hooks/useEvents";
+import { useEffect } from "react";
 
 const ProgramHeader = () => {
-  const { activeEvent } = useEvents();
+  const { activeEvent, loadEvents } = useEvents();
+
+  // Reload events when component mounts to ensure we have the latest data
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "TBA";
@@ -28,6 +34,8 @@ const ProgramHeader = () => {
     });
     return `${start} – ${end}`;
   };
+
+  console.log('ProgramHeader activeEvent:', activeEvent);
 
   return (
     <div className="text-center mb-6 sm:mb-8">

@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -22,7 +21,7 @@ export const useEvents = () => {
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     try {
       setLoading(true);
       console.log('Loading events...');
@@ -42,6 +41,7 @@ export const useEvents = () => {
         setEvents(data);
         const active = data.find(event => event.is_active);
         setActiveEvent(active || null);
+        console.log('Active event set to:', active);
       }
     } catch (error) {
       console.error('Error loading events:', error);
@@ -49,7 +49,7 @@ export const useEvents = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const createEvent = async (eventData: Omit<Event, 'id' | 'created_at' | 'updated_at' | 'is_active'>) => {
     try {
@@ -151,7 +151,7 @@ export const useEvents = () => {
 
   useEffect(() => {
     loadEvents();
-  }, []);
+  }, [loadEvents]);
 
   return {
     events,
