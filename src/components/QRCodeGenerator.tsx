@@ -1,7 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Shield, Sparkles, Smartphone, Link2, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEvents } from "@/hooks/useEvents";
 
 interface QRCodeGeneratorProps {
   onScan: () => void;
@@ -12,6 +12,7 @@ const QRCodeGenerator = ({
 }: QRCodeGeneratorProps) => {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [currentUrl, setCurrentUrl] = useState("");
+  const { activeEvent } = useEvents();
 
   useEffect(() => {
     // Get current URL and create the form URL
@@ -46,6 +47,9 @@ const QRCodeGenerator = ({
     }
   };
 
+  // Get the display title - use active event name or fallback
+  const displayTitle = activeEvent?.name || "CYBERSECURITY TRAINING";
+
   return (
     <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6 relative">
       {/* KNUST Logo */}
@@ -73,7 +77,7 @@ const QRCodeGenerator = ({
               </div>
             </div>
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 tracking-wide">
-              CYBERSECURITY TRAINING
+              {displayTitle}
             </h1>
             <p className="text-sm sm:text-base text-green-400 font-medium font-mono">
               Scan to begin your training journey
