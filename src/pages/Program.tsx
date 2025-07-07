@@ -42,7 +42,53 @@ const Program = () => {
     if (savedCompleted) {
       setCompletedSessions(JSON.parse(savedCompleted));
     }
-  }, [loadEvents]);
+
+    // Record attendance for this event when accessing the program
+    if (activeEvent) {
+      recordEventAttendance();
+    }
+  }, [loadEvents, activeEvent]);
+
+  const recordEventAttendance = () => {
+    if (!activeEvent) return;
+
+    // Get current attendee info from localStorage
+    const attendeeName = localStorage.getItem("attendeeName");
+    if (!attendeeName) return;
+
+    // Create event-based attendance record
+    const attendanceRecord = {
+      name: attendeeName,
+      timestamp: new Date().toISOString(),
+      id: Date.now(),
+      eventId: activeEvent.id,
+      eventName: activeEvent.name
+    };
+
+    // Get existing event-based attendance
+    const existingAttendance = JSON.parse(localStorage.getItem("eventAttendance") || "[]");
+    
+    // Check if already recorded for this event and user
+    const alreadyRecorded = existingAttendance.some(
+      (record: any) => record.eventId === activeEvent.id && record.name === attendeeName
+    );
+
+    if (!alreadyRecorded) {
+      existingAttendance.push(attendanceRecord);
+      localStorage.setItem("eventAttendance", JSON.stringify(existingAttendance));
+      
+      // Also maintain the old format for backward compatibility
+      const oldFormatAttendance = JSON.parse(localStorage.getItem("attendees") || "[]");
+      oldFormatAttendance.push({
+        name: attendeeName,
+        timestamp: attendanceRecord.timestamp,
+        id: attendanceRecord.id
+      });
+      localStorage.setItem("attendees", JSON.stringify(oldFormatAttendance));
+
+      console.log('Attendance recorded for event:', activeEvent.name);
+    }
+  };
 
   // Debug log to see what's happening
   useEffect(() => {
