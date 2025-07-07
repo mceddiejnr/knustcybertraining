@@ -25,6 +25,7 @@ export const useEvents = () => {
   const loadEvents = async () => {
     try {
       setLoading(true);
+      console.log('Loading events...');
       const { data, error } = await supabase
         .from('events')
         .select('*')
@@ -36,6 +37,7 @@ export const useEvents = () => {
         return;
       }
 
+      console.log('Loaded events:', data);
       if (data) {
         setEvents(data);
         const active = data.find(event => event.is_active);
@@ -51,6 +53,7 @@ export const useEvents = () => {
 
   const createEvent = async (eventData: Omit<Event, 'id' | 'created_at' | 'updated_at' | 'is_active'>) => {
     try {
+      console.log('Creating event with data:', eventData);
       const { data, error } = await supabase
         .from('events')
         .insert([{ ...eventData, is_active: false }])
@@ -63,6 +66,7 @@ export const useEvents = () => {
         return false;
       }
 
+      console.log('Event created successfully:', data);
       toast.success('Event created successfully');
       await loadEvents();
       return true;
@@ -75,6 +79,7 @@ export const useEvents = () => {
 
   const updateEvent = async (eventId: string, updates: Partial<Event>) => {
     try {
+      console.log('Updating event:', eventId, 'with updates:', updates);
       const { error } = await supabase
         .from('events')
         .update(updates)
@@ -98,6 +103,7 @@ export const useEvents = () => {
 
   const activateEvent = async (eventId: string) => {
     try {
+      console.log('Activating event:', eventId);
       const { error } = await supabase
         .from('events')
         .update({ is_active: true })
@@ -121,6 +127,7 @@ export const useEvents = () => {
 
   const deleteEvent = async (eventId: string) => {
     try {
+      console.log('Deleting event:', eventId);
       const { error } = await supabase
         .from('events')
         .delete()

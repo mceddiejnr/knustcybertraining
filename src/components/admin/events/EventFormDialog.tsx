@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,14 +16,29 @@ interface EventFormDialogProps {
 const EventFormDialog = ({ open, onOpenChange, event }: EventFormDialogProps) => {
   const { createEvent, updateEvent } = useEvents();
   const [formData, setFormData] = useState({
-    name: event?.name || "",
-    description: event?.description || "",
-    theme: event?.theme || "",
-    date: event?.date || "",
-    start_time: event?.start_time || "",
-    end_time: event?.end_time || "",
-    location: event?.location || "",
+    name: "",
+    description: "",
+    theme: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+    location: "",
   });
+
+  // Reset form when dialog opens/closes or event changes
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        name: event?.name || "",
+        description: event?.description || "",
+        theme: event?.theme || "",
+        date: event?.date || "",
+        start_time: event?.start_time || "",
+        end_time: event?.end_time || "",
+        location: event?.location || "",
+      });
+    }
+  }, [open, event]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,12 +47,15 @@ const EventFormDialog = ({ open, onOpenChange, event }: EventFormDialogProps) =>
       return;
     }
 
+    console.log('Submitting event data:', formData);
+
     const success = event 
       ? await updateEvent(event.id, formData)
       : await createEvent(formData);
 
     if (success) {
       onOpenChange(false);
+      // Reset form after successful submission
       setFormData({
         name: "",
         description: "",
