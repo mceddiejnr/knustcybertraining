@@ -37,6 +37,29 @@ const ProgramHeader = () => {
 
   console.log('ProgramHeader activeEvent:', activeEvent);
 
+  // If no active event, show default content
+  if (!activeEvent) {
+    return (
+      <div className="text-center mb-6 sm:mb-8">
+        <div className="flex justify-center items-center space-x-4 mb-4">
+          <img 
+            src="/lovable-uploads/d6c770ee-3058-4298-a368-19c14cead8a0.png" 
+            alt="KNUST Logo" 
+            className="h-12 sm:h-16 w-auto drop-shadow-lg"
+          />
+          <div className="text-left">
+            <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-wide">
+              TRAINING PROGRAM
+            </h1>
+            <p className="text-green-400 font-mono text-sm sm:text-base">
+              Organized by Library & UITS, KNUST
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-center mb-6 sm:mb-8">
       <div className="flex justify-center items-center space-x-4 mb-4">
@@ -47,10 +70,10 @@ const ProgramHeader = () => {
         />
         <div className="text-left">
           <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-wide">
-            {activeEvent?.name || 'CYBERSECURITY TRAINING'}
+            {activeEvent.name}
           </h1>
           <p className="text-green-400 font-mono text-sm sm:text-base">
-            {activeEvent?.description || 'Organized by Library & UITS, KNUST'}
+            {activeEvent.description || 'Organized by Library & UITS, KNUST'}
           </p>
         </div>
       </div>
@@ -61,7 +84,7 @@ const ProgramHeader = () => {
           <CardContent className="p-3 sm:p-4 text-center">
             <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
             <p className="text-white font-semibold text-sm sm:text-base">
-              {formatDate(activeEvent?.date)}
+              {formatDate(activeEvent.date)}
             </p>
           </CardContent>
         </Card>
@@ -70,7 +93,7 @@ const ProgramHeader = () => {
           <CardContent className="p-3 sm:p-4 text-center">
             <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
             <p className="text-white font-semibold text-sm sm:text-base">
-              {formatTime(activeEvent?.start_time, activeEvent?.end_time)}
+              {formatTime(activeEvent.start_time, activeEvent.end_time)}
             </p>
           </CardContent>
         </Card>
@@ -79,14 +102,14 @@ const ProgramHeader = () => {
           <CardContent className="p-3 sm:p-4 text-center">
             <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
             <p className="text-white font-semibold text-sm sm:text-base">
-              {activeEvent?.location || 'Library Mall Conference Room'}
+              {activeEvent.location || 'TBA'}
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Theme */}
-      {activeEvent?.theme && (
+      {activeEvent.theme && (
         <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
