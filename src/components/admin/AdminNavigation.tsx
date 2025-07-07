@@ -10,10 +10,11 @@ import {
   MessageCircle,
   UserCheck,
   Folder,
-  HelpCircle
+  HelpCircle,
+  Calendar
 } from "lucide-react";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions" | "events";
 
 interface AdminNavigationProps {
   currentSection: AdminSection;
@@ -23,6 +24,7 @@ interface AdminNavigationProps {
 const AdminNavigation = ({ currentSection, onSectionChange }: AdminNavigationProps) => {
   const navItems = [
     { id: "overview" as AdminSection, label: "Overview", icon: BarChart3 },
+    { id: "events" as AdminSection, label: "Events", icon: Calendar },
     { id: "attendance" as AdminSection, label: "Attendance", icon: Users },
     { id: "questions" as AdminSection, label: "Questions", icon: HelpCircle },
     { id: "feedback" as AdminSection, label: "Feedback", icon: MessageCircle },

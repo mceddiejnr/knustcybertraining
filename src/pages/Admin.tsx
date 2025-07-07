@@ -12,12 +12,13 @@ import AdminNavigation from "@/components/admin/AdminNavigation";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import QuestionsManager from "@/components/admin/QuestionsManager";
+import EventManager from "@/components/admin/EventManager";
 import CyberBackground from "@/components/CyberBackground";
 import AuthGuard from "@/components/AuthGuard";
 import { useAuth } from "@/hooks/useAuth";
 import ResourceManager from "@/components/admin/ResourceManager";
 
-type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions";
+type AdminSection = "overview" | "attendance" | "messages" | "program" | "analytics" | "access-codes" | "user-roles" | "feedback" | "user-approvals" | "resources" | "questions" | "events";
 
 interface AttendeeData {
   name: string;
@@ -80,6 +81,8 @@ const AdminContent = () => {
         return <ResourceManager />;
       case "questions":
         return <QuestionsManager />;
+      case "events":
+        return <EventManager />;
       default:
         return <AdminOverview attendees={attendees} qrScans={qrScans} />;
     }

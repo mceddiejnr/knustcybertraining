@@ -1,8 +1,34 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, MapPin, Award } from "lucide-react";
+import { useEvents } from "@/hooks/useEvents";
 
 const ProgramHeader = () => {
+  const { activeEvent } = useEvents();
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "TBA";
+    return new Date(dateString).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (startTime: string | null, endTime: string | null) => {
+    if (!startTime || !endTime) return "TBA";
+    const start = new Date(`2000-01-01T${startTime}`).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    const end = new Date(`2000-01-01T${endTime}`).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    return `${start} – ${end}`;
+  };
+
   return (
     <div className="text-center mb-6 sm:mb-8">
       <div className="flex justify-center items-center space-x-4 mb-4">
@@ -13,9 +39,11 @@ const ProgramHeader = () => {
         />
         <div className="text-left">
           <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-wide">
-            CYBERSECURITY TRAINING
+            {activeEvent?.name || 'CYBERSECURITY TRAINING'}
           </h1>
-          <p className="text-green-400 font-mono text-sm sm:text-base">Organized by Library & UITS, KNUST</p>
+          <p className="text-green-400 font-mono text-sm sm:text-base">
+            {activeEvent?.description || 'Organized by Library & UITS, KNUST'}
+          </p>
         </div>
       </div>
       
@@ -24,37 +52,45 @@ const ProgramHeader = () => {
         <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
           <CardContent className="p-3 sm:p-4 text-center">
             <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
-            <p className="text-white font-semibold text-sm sm:text-base">Tuesday, 3rd June 2025</p>
+            <p className="text-white font-semibold text-sm sm:text-base">
+              {formatDate(activeEvent?.date)}
+            </p>
           </CardContent>
         </Card>
         
         <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
           <CardContent className="p-3 sm:p-4 text-center">
             <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
-            <p className="text-white font-semibold text-sm sm:text-base">10:00 AM – 12:00 PM</p>
+            <p className="text-white font-semibold text-sm sm:text-base">
+              {formatTime(activeEvent?.start_time, activeEvent?.end_time)}
+            </p>
           </CardContent>
         </Card>
         
         <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30">
           <CardContent className="p-3 sm:p-4 text-center">
             <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2" />
-            <p className="text-white font-semibold text-sm sm:text-base">Library Mall Conference Room</p>
+            <p className="text-white font-semibold text-sm sm:text-base">
+              {activeEvent?.location || 'Library Mall Conference Room'}
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Theme */}
-      <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-center mb-2">
-            <Award className="w-6 h-6 text-green-400 mr-2" />
-            <h2 className="text-lg sm:text-xl font-bold text-white">Training Theme</h2>
-          </div>
-          <p className="text-green-400 font-semibold text-base sm:text-lg">
-            "Cybersecurity Essentials: Staying Safe in a Digital Workplace"
-          </p>
-        </CardContent>
-      </Card>
+      {activeEvent?.theme && (
+        <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-center mb-2">
+              <Award className="w-6 h-6 text-green-400 mr-2" />
+              <h2 className="text-lg sm:text-xl font-bold text-white">Training Theme</h2>
+            </div>
+            <p className="text-green-400 font-semibold text-base sm:text-lg">
+              "{activeEvent.theme}"
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

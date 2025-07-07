@@ -41,6 +41,48 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string
+          date: string | null
+          description: string | null
+          end_time: string | null
+          id: string
+          is_active: boolean
+          location: string | null
+          name: string
+          start_time: string | null
+          theme: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name: string
+          start_time?: string | null
+          theme?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          start_time?: string | null
+          theme?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           additional_comments: string | null
