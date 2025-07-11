@@ -12,7 +12,6 @@ import TrainingSchedule from "@/components/TrainingSchedule";
 import InspirationalMessage from "@/components/InspirationalMessage";
 import QuickActions from "@/components/QuickActions";
 import { useEvents } from "@/hooks/useEvents";
-import { useAuth } from "@/hooks/useAuth";
 import {
   Sheet,
   SheetContent,
@@ -26,7 +25,6 @@ import { Button } from "@/components/ui/button";
 const Program = () => {
   const [inspirationalMessage, setInspirationalMessage] = useState("");
   const { activeEvent, loadEvents } = useEvents();
-  const { user } = useAuth();
 
   useEffect(() => {
     // Force reload events when Program page loads

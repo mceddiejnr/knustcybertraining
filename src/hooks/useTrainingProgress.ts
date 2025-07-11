@@ -1,53 +1,34 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
 import { useEvents } from '@/hooks/useEvents';
 import { toast } from 'sonner';
 
 interface TrainingProgress {
-  id: string;
-  user_id: string;
-  event_id: string | null;
-  session_index: number;
-  session_title: string;
-  completed_at: string;
-  created_at: string;
+  sessionIndex: number;
+  sessionTitle: string;
+  completedAt: string;
+  eventId?: string;
 }
 
 export const useTrainingProgress = () => {
-  const { user } = useAuth();
   const { activeEvent } = useEvents();
   const [completedSessions, setCompletedSessions] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load user's progress from database
+  // Load user's progress from localStorage
   const loadProgress = async () => {
-    if (!user || !activeEvent) {
-      setLoading(false);
-      return;
-    }
-
     try {
-      const { data, error } = await supabase
-        .from('training_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('event_id', activeEvent.id);
-
-      if (error) {
-        console.error('Error loading progress:', error);
-        toast.error('Failed to load progress');
-        return;
-      }
-
-      if (data) {
-        const sessionIndices = data.map(item => item.session_index);
+      setLoading(true);
+      const storageKey = activeEvent ? `training_progress_${activeEvent.id}` : 'training_progress_default';
+      const savedProgress = localStorage.getItem(storageKey);
+      
+      if (savedProgress) {
+        const progressData: TrainingProgress[] = JSON.parse(savedProgress);
+        const sessionIndices = progressData.map(item => item.sessionIndex);
         setCompletedSessions(sessionIndices);
       }
     } catch (error) {
-      console.error('Error loading progress:', error);
-      toast.error('Failed to load progress');
+      console.error('Error loading progress from localStorage:', error);
     } finally {
       setLoading(false);
     }
@@ -55,30 +36,26 @@ export const useTrainingProgress = () => {
 
   // Mark session as complete
   const markSessionComplete = async (sessionIndex: number, sessionTitle: string) => {
-    if (!user || !activeEvent) {
-      toast.error('Please sign in to track progress');
-      return false;
-    }
-
     try {
-      const { error } = await supabase
-        .from('training_progress')
-        .insert({
-          user_id: user.id,
-          event_id: activeEvent.id,
-          session_index: sessionIndex,
-          session_title: sessionTitle
+      const storageKey = activeEvent ? `training_progress_${activeEvent.id}` : 'training_progress_default';
+      const existingProgress = localStorage.getItem(storageKey);
+      let progressData: TrainingProgress[] = existingProgress ? JSON.parse(existingProgress) : [];
+
+      // Check if session is already completed
+      if (!progressData.some(item => item.sessionIndex === sessionIndex)) {
+        progressData.push({
+          sessionIndex,
+          sessionTitle,
+          completedAt: new Date().toISOString(),
+          eventId: activeEvent?.id
         });
 
-      if (error) {
-        console.error('Error marking session complete:', error);
-        toast.error('Failed to mark session as complete');
-        return false;
+        localStorage.setItem(storageKey, JSON.stringify(progressData));
+        setCompletedSessions(prev => [...prev, sessionIndex]);
+        toast.success('Session marked as complete!');
+        return true;
       }
-
-      setCompletedSessions(prev => [...prev, sessionIndex]);
-      toast.success('Session marked as complete!');
-      return true;
+      return false;
     } catch (error) {
       console.error('Error marking session complete:', error);
       toast.error('Failed to mark session as complete');
@@ -88,28 +65,20 @@ export const useTrainingProgress = () => {
 
   // Unmark session as complete
   const unmarkSessionComplete = async (sessionIndex: number) => {
-    if (!user || !activeEvent) {
-      toast.error('Please sign in to track progress');
-      return false;
-    }
-
     try {
-      const { error } = await supabase
-        .from('training_progress')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('event_id', activeEvent.id)
-        .eq('session_index', sessionIndex);
-
-      if (error) {
-        console.error('Error unmarking session:', error);
-        toast.error('Failed to unmark session');
-        return false;
+      const storageKey = activeEvent ? `training_progress_${activeEvent.id}` : 'training_progress_default';
+      const existingProgress = localStorage.getItem(storageKey);
+      
+      if (existingProgress) {
+        let progressData: TrainingProgress[] = JSON.parse(existingProgress);
+        progressData = progressData.filter(item => item.sessionIndex !== sessionIndex);
+        
+        localStorage.setItem(storageKey, JSON.stringify(progressData));
+        setCompletedSessions(prev => prev.filter(index => index !== sessionIndex));
+        toast.success('Session unmarked');
+        return true;
       }
-
-      setCompletedSessions(prev => prev.filter(index => index !== sessionIndex));
-      toast.success('Session unmarked');
-      return true;
+      return false;
     } catch (error) {
       console.error('Error unmarking session:', error);
       toast.error('Failed to unmark session');
@@ -134,7 +103,7 @@ export const useTrainingProgress = () => {
 
   useEffect(() => {
     loadProgress();
-  }, [user, activeEvent]);
+  }, [activeEvent]);
 
   return {
     completedSessions,

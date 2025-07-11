@@ -3,11 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Users, CheckCircle } from "lucide-react";
 import { useTrainingProgress } from "@/hooks/useTrainingProgress";
-import { useAuth } from "@/hooks/useAuth";
 import ProgressIndicator from "@/components/ProgressIndicator";
 
 const TrainingSchedule = () => {
-  const { user } = useAuth();
   const { completedSessions, toggleSessionCompletion, getProgressPercentage, loading } = useTrainingProgress();
 
   const trainingSchedule = [
@@ -26,10 +24,6 @@ const TrainingSchedule = () => {
   ];
 
   const handleToggleCompletion = async (index: number, sessionTitle: string) => {
-    if (!user) {
-      return;
-    }
-    
     await toggleSessionCompletion(index, sessionTitle);
   };
 
@@ -53,14 +47,12 @@ const TrainingSchedule = () => {
           </div>
         </CardTitle>
         
-        {user && (
-          <div className="mt-4">
-            <ProgressIndicator 
-              completed={completedSessions.length} 
-              total={trainingSchedule.length} 
-            />
-          </div>
-        )}
+        <div className="mt-4">
+          <ProgressIndicator 
+            completed={completedSessions.length} 
+            total={trainingSchedule.length} 
+          />
+        </div>
       </CardHeader>
       
       <CardContent>
@@ -80,16 +72,14 @@ const TrainingSchedule = () => {
                     <Clock className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
                     <span className="text-green-400 font-semibold font-mono text-sm">{item.time}</span>
                   </div>
-                  {user && (
-                    <Button
-                      onClick={() => handleToggleCompletion(index, item.activity)}
-                      variant="ghost"
-                      size="sm"
-                      className="sm:hidden h-6 w-6 p-0"
-                    >
-                      <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleToggleCompletion(index, item.activity)}
+                    variant="ghost"
+                    size="sm"
+                    className="sm:hidden h-6 w-6 p-0"
+                  >
+                    <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
+                  </Button>
                 </div>
                 
                 <div className="sm:col-span-2">
@@ -102,29 +92,25 @@ const TrainingSchedule = () => {
                     <Users className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
                     <span className="text-gray-300 text-sm">{item.facilitator}</span>
                   </div>
-                  {user && (
-                    <Button
-                      onClick={() => handleToggleCompletion(index, item.activity)}
-                      variant="ghost"
-                      size="sm"
-                      className="hidden sm:flex h-6 w-6 p-0"
-                    >
-                      <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleToggleCompletion(index, item.activity)}
+                    variant="ghost"
+                    size="sm"
+                    className="hidden sm:flex h-6 w-6 p-0"
+                  >
+                    <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         </div>
         
-        {!user && (
-          <div className="mt-4 p-4 bg-blue-700/20 border border-blue-500/30 rounded-lg">
-            <p className="text-blue-300 text-sm text-center">
-              Sign in to track your training progress and mark sessions as complete
-            </p>
-          </div>
-        )}
+        <div className="mt-4 p-4 bg-blue-700/20 border border-blue-500/30 rounded-lg">
+          <p className="text-blue-300 text-sm text-center">
+            Your progress is automatically saved locally on this device
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
