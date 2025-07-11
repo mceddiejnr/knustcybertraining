@@ -2,13 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Users, CheckCircle } from "lucide-react";
+import { useTrainingProgress } from "@/hooks/useTrainingProgress";
+import { useAuth } from "@/hooks/useAuth";
+import ProgressIndicator from "@/components/ProgressIndicator";
 
-interface TrainingScheduleProps {
-  completedSessions: number[];
-  toggleSessionCompletion: (index: number) => void;
-}
+const TrainingSchedule = () => {
+  const { user } = useAuth();
+  const { completedSessions, toggleSessionCompletion, getProgressPercentage, loading } = useTrainingProgress();
 
-const TrainingSchedule = ({ completedSessions, toggleSessionCompletion }: TrainingScheduleProps) => {
   const trainingSchedule = [
     { time: "10:00 – 10:10", activity: "Opening Remarks and Welcome", facilitator: "University Librarian", description: "Welcome address and introduction to the training program" },
     { time: "10:10 – 10:20", activity: "Introduction to Cybersecurity", facilitator: "Deputy Director, ISTAD", description: "Fundamentals of cybersecurity and its importance" },
@@ -24,6 +25,24 @@ const TrainingSchedule = ({ completedSessions, toggleSessionCompletion }: Traini
     { time: "11:50 – 12:00", activity: "Q&A, Interactive Session", facilitator: "All Facilitators", description: "Open discussion and practical questions" }
   ];
 
+  const handleToggleCompletion = async (index: number, sessionTitle: string) => {
+    if (!user) {
+      return;
+    }
+    
+    await toggleSessionCompletion(index, sessionTitle);
+  };
+
+  if (loading) {
+    return (
+      <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
+        <CardHeader>
+          <CardTitle className="text-white">Loading Training Schedule...</CardTitle>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-gray-800/95 backdrop-blur-sm border-green-500/30 mb-6">
       <CardHeader>
@@ -32,11 +51,18 @@ const TrainingSchedule = ({ completedSessions, toggleSessionCompletion }: Traini
             <Clock className="w-5 h-5 text-green-400" />
             <span>Training Schedule</span>
           </div>
-          <span className="text-sm text-gray-400">
-            {completedSessions.length}/{trainingSchedule.length} completed
-          </span>
         </CardTitle>
+        
+        {user && (
+          <div className="mt-4">
+            <ProgressIndicator 
+              completed={completedSessions.length} 
+              total={trainingSchedule.length} 
+            />
+          </div>
+        )}
       </CardHeader>
+      
       <CardContent>
         <div className="overflow-x-auto">
           <div className="grid gap-3">
@@ -54,37 +80,51 @@ const TrainingSchedule = ({ completedSessions, toggleSessionCompletion }: Traini
                     <Clock className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
                     <span className="text-green-400 font-semibold font-mono text-sm">{item.time}</span>
                   </div>
-                  <Button
-                    onClick={() => toggleSessionCompletion(index)}
-                    variant="ghost"
-                    size="sm"
-                    className="sm:hidden h-6 w-6 p-0"
-                  >
-                    <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
-                  </Button>
+                  {user && (
+                    <Button
+                      onClick={() => handleToggleCompletion(index, item.activity)}
+                      variant="ghost"
+                      size="sm"
+                      className="sm:hidden h-6 w-6 p-0"
+                    >
+                      <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
+                    </Button>
+                  )}
                 </div>
+                
                 <div className="sm:col-span-2">
                   <h4 className="text-white font-medium text-sm mb-1">{item.activity}</h4>
                   <p className="text-gray-400 text-xs">{item.description}</p>
                 </div>
+                
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Users className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
                     <span className="text-gray-300 text-sm">{item.facilitator}</span>
                   </div>
-                  <Button
-                    onClick={() => toggleSessionCompletion(index)}
-                    variant="ghost"
-                    size="sm"
-                    className="hidden sm:flex h-6 w-6 p-0"
-                  >
-                    <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
-                  </Button>
+                  {user && (
+                    <Button
+                      onClick={() => handleToggleCompletion(index, item.activity)}
+                      variant="ghost"
+                      size="sm"
+                      className="hidden sm:flex h-6 w-6 p-0"
+                    >
+                      <CheckCircle className={`w-4 h-4 ${completedSessions.includes(index) ? 'text-green-400' : 'text-gray-400'}`} />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
+        
+        {!user && (
+          <div className="mt-4 p-4 bg-blue-700/20 border border-blue-500/30 rounded-lg">
+            <p className="text-blue-300 text-sm text-center">
+              Sign in to track your training progress and mark sessions as complete
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

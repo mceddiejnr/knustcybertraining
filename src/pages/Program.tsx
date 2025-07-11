@@ -12,6 +12,7 @@ import TrainingSchedule from "@/components/TrainingSchedule";
 import InspirationalMessage from "@/components/InspirationalMessage";
 import QuickActions from "@/components/QuickActions";
 import { useEvents } from "@/hooks/useEvents";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Sheet,
   SheetContent,
@@ -24,8 +25,8 @@ import { Button } from "@/components/ui/button";
 
 const Program = () => {
   const [inspirationalMessage, setInspirationalMessage] = useState("");
-  const [completedSessions, setCompletedSessions] = useState<number[]>([]);
   const { activeEvent, loadEvents } = useEvents();
+  const { user } = useAuth();
 
   useEffect(() => {
     // Force reload events when Program page loads
@@ -36,11 +37,6 @@ const Program = () => {
       setInspirationalMessage(savedMessage);
     } else {
       setInspirationalMessage("Stay vigilant, stay secure! Your digital safety is in your hands. 🛡️");
-    }
-
-    const savedCompleted = localStorage.getItem("completedSessions");
-    if (savedCompleted) {
-      setCompletedSessions(JSON.parse(savedCompleted));
     }
 
     // Record attendance for this event when accessing the program
@@ -95,15 +91,6 @@ const Program = () => {
     console.log('Program page - activeEvent:', activeEvent);
   }, [activeEvent]);
 
-  const toggleSessionCompletion = (index: number) => {
-    const updatedCompleted = completedSessions.includes(index)
-      ? completedSessions.filter(i => i !== index)
-      : [...completedSessions, index];
-    
-    setCompletedSessions(updatedCompleted);
-    localStorage.setItem("completedSessions", JSON.stringify(updatedCompleted));
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 relative overflow-hidden">
       <CyberBackground />
@@ -133,10 +120,7 @@ const Program = () => {
           <TabsContent value="program" className="mt-6">
             <LearningObjectives />
             <KeyTopics />
-            <TrainingSchedule 
-              completedSessions={completedSessions}
-              toggleSessionCompletion={toggleSessionCompletion}
-            />
+            <TrainingSchedule />
             <InspirationalMessage message={inspirationalMessage} />
             <QuickActions />
           </TabsContent>

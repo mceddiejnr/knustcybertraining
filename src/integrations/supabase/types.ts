@@ -233,6 +233,44 @@ export type Database = {
         }
         Relationships: []
       }
+      training_progress: {
+        Row: {
+          completed_at: string
+          created_at: string
+          event_id: string | null
+          id: string
+          session_index: number
+          session_title: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          session_index: number
+          session_title: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          session_index?: number
+          session_title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_progress_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
