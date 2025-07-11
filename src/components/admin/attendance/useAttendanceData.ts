@@ -17,14 +17,16 @@ export const useAttendanceData = (activeEvent: any) => {
     loadEventAttendance();
   }, []);
 
+  // Auto-select active event when it becomes available
+  useEffect(() => {
+    if (activeEvent && activeEvent.id) {
+      setSelectedEventId(activeEvent.id);
+    }
+  }, [activeEvent]);
+
   const loadEventAttendance = () => {
     const eventAttendanceData = JSON.parse(localStorage.getItem("eventAttendance") || "[]");
     setEventAttendees(eventAttendanceData);
-    
-    // Set default selected event to active event
-    if (activeEvent && selectedEventId === "all") {
-      setSelectedEventId(activeEvent.id);
-    }
   };
 
   const updateLocalStorage = (updatedAttendees: EventAttendeeData[]) => {
