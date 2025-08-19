@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Download, MessageSquare } from "lucide-react";
+import { BookOpen, Download, MessageSquare, Users } from "lucide-react";
 import CyberBackground from "@/components/CyberBackground";
 import ProgramResources from "@/components/ProgramResources";
 import FeedbackForm from "@/components/FeedbackForm";
@@ -11,6 +11,7 @@ import KeyTopics from "@/components/KeyTopics";
 import TrainingSchedule from "@/components/TrainingSchedule";
 import InspirationalMessage from "@/components/InspirationalMessage";
 import QuickActions from "@/components/QuickActions";
+import DiscussionForum from "@/components/DiscussionForum";
 import { useEvents } from "@/hooks/useEvents";
 import {
   Sheet,
@@ -98,7 +99,7 @@ const Program = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="program" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800/80 backdrop-blur-sm border border-green-500/30">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800/80 backdrop-blur-sm border border-green-500/30">
             <TabsTrigger 
               value="program" 
               className="text-white data-[state=active]:bg-green-600 data-[state=active]:text-white"
@@ -113,6 +114,13 @@ const Program = () => {
               <Download className="w-4 h-4 mr-2" />
               Resources
             </TabsTrigger>
+            <TabsTrigger 
+              value="discussions" 
+              className="text-white data-[state=active]:bg-green-600 data-[state=active]:text-white"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Discussions
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="program" className="mt-6">
@@ -125,6 +133,10 @@ const Program = () => {
 
           <TabsContent value="resources" className="mt-6">
             <ProgramResources />
+          </TabsContent>
+
+          <TabsContent value="discussions" className="mt-6">
+            <DiscussionForum />
           </TabsContent>
         </Tabs>
       </div>
